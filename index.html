@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
+<!-- saved from url=(0066)file:///C:/Users/basilh/Downloads/IT_Knowledge_Base_Preview_5.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>IT Knowledge Base</title>
 <style>
@@ -699,6 +699,115 @@
   .sm-btn.attn:hover { background: rgba(255,68,68,0.08); }
   .sm-btn.del { border-color: var(--border2); color: var(--text2); }
   .sm-btn.del:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── IT VIEW UPGRADES ── */
+  .it-toolbar {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border2);
+    background: var(--bg2);
+    flex-shrink: 0; flex-wrap: wrap;
+  }
+
+  .it-result-count {
+    font-family: var(--mono); font-size: 11px; color: var(--text2);
+    letter-spacing: 0.1em; white-space: nowrap;
+  }
+  .it-result-count strong { color: var(--green); }
+
+  .it-sort {
+    background: var(--bg3); border: 1px solid var(--border2);
+    color: var(--text2); font-family: var(--mono); font-size: 11px;
+    padding: 5px 10px; border-radius: 4px; cursor: pointer; outline: none;
+    transition: border-color 0.15s;
+  }
+  .it-sort:focus, .it-sort:hover { border-color: var(--green); color: var(--text); }
+  .it-sort option { background: var(--bg3); }
+
+  .view-toggle {
+    display: flex; gap: 4px; margin-left: auto;
+  }
+  .vt-btn {
+    background: transparent; border: 1px solid var(--border2);
+    color: var(--text2); font-size: 14px;
+    width: 30px; height: 30px; border-radius: 4px;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .vt-btn.active, .vt-btn:hover { border-color: var(--green); color: var(--green); background: rgba(0,255,65,0.06); }
+
+  .clear-filters-btn {
+    background: transparent; border: 1px solid rgba(255,68,68,0.3);
+    color: var(--red); font-family: var(--mono); font-size: 10px;
+    letter-spacing: 0.1em; padding: 5px 12px; border-radius: 3px;
+    cursor: pointer; transition: all 0.15s; display: none;
+  }
+  .clear-filters-btn:hover { background: rgba(255,68,68,0.08); }
+  .clear-filters-btn.visible { display: block; }
+
+  /* Tag filter bar */
+  .it-tag-bar {
+    display: flex; gap: 6px; padding: 8px 16px;
+    border-bottom: 1px solid var(--border2);
+    background: var(--bg);
+    overflow-x: auto; flex-shrink: 0;
+    scrollbar-width: none;
+  }
+  .it-tag-bar::-webkit-scrollbar { display: none; }
+  .it-tag-bar-label {
+    font-family: var(--mono); font-size: 9px; color: var(--text2);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    white-space: nowrap; align-self: center; margin-right: 4px;
+  }
+  .tag-pill {
+    font-family: var(--mono); font-size: 10px;
+    color: var(--blue); background: rgba(0,180,255,0.06);
+    border: 1px solid rgba(0,180,255,0.18);
+    padding: 3px 10px; border-radius: 20px;
+    cursor: pointer; white-space: nowrap; transition: all 0.15s;
+  }
+  .tag-pill:hover { background: rgba(0,180,255,0.15); }
+  .tag-pill.active { background: rgba(0,180,255,0.2); border-color: var(--blue); color: #fff; }
+
+  /* List view */
+  .it-entries.list-view {
+    grid-template-columns: 1fr;
+  }
+  .it-entries.list-view .entry-card {
+    display: flex; align-items: center; gap: 16px; padding: 12px 16px;
+  }
+  .it-entries.list-view .entry-cat {
+    flex-shrink: 0; min-width: 80px; margin-bottom: 0;
+  }
+  .it-entries.list-view .entry-title {
+    flex: 1; margin-bottom: 0; font-size: 13px;
+  }
+  .it-entries.list-view .entry-snippet { display: none; }
+  .it-entries.list-view .entry-meta { margin-top: 0; flex-shrink: 0; }
+
+  /* Search highlight */
+  mark {
+    background: rgba(255,200,0,0.3); color: var(--text);
+    border-radius: 2px; padding: 0 1px;
+  }
+
+  /* Sidebar tag section */
+  .sidebar-tags {
+    padding: 8px 12px 16px;
+    border-top: 1px solid var(--border2);
+  }
+  .sidebar-tag-list {
+    display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px;
+  }
+  .sidebar-tag-pill {
+    font-family: var(--mono); font-size: 9px;
+    color: var(--text2); background: var(--bg3);
+    border: 1px solid var(--border2);
+    padding: 2px 8px; border-radius: 10px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .sidebar-tag-pill:hover { border-color: var(--blue); color: var(--blue); }
+  .sidebar-tag-pill.active { border-color: var(--blue); color: var(--blue); background: rgba(0,180,255,0.08); }
 </style>
 </head>
 <body>
@@ -712,13 +821,13 @@
   </div>
 
   <div class="rp-cards">
-    <div class="rp-card" onclick="selectRole('enduser')">
+    <div class="rp-card" onclick="selectRole(&#39;enduser&#39;)">
       <span class="rp-card-icon">👤</span>
       <div class="rp-card-tag">[ access_level: user ]</div>
       <div class="rp-card-title">End User</div>
       <div class="rp-card-desc">Describe your problem and get clear, step-by-step help. No tech jargon.</div>
     </div>
-    <div class="rp-card" onclick="selectRole('it')">
+    <div class="rp-card" onclick="selectRole(&#39;it&#39;)">
       <span class="rp-card-icon">🛠</span>
       <div class="rp-card-tag">[ access_level: technician ]</div>
       <div class="rp-card-title">IT Support</div>
@@ -726,7 +835,7 @@
     </div>
   </div>
 
-  <div class="rp-session" id="session-id"></div>
+  <div class="rp-session" id="session-id">session_id: 8S9ASUKS2</div>
 </div>
 
 <!-- ── END USER VIEW ─────────────── -->
@@ -761,39 +870,43 @@
     <div class="it-sidebar">
       <div class="sidebar-section">
         <div class="sidebar-label">Categories</div>
-        <button class="cat-btn active" onclick="filterCat('all', this)">
-          📁 All Cases <span class="count">706</span>
+        <button class="cat-btn active" onclick="filterCat(&#39;all&#39;, this)">
+          📁 All Cases <span class="count" id="cnt-all">706</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('mac', this)">
-          🍎 Mac / macOS <span class="count">149</span>
+        <button class="cat-btn" onclick="filterCat(&#39;mac&#39;, this)">
+          🍎 Mac / macOS <span class="count" id="cnt-mac">149</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('windows', this)">
-          🪟 Windows <span class="count">104</span>
+        <button class="cat-btn" onclick="filterCat(&#39;windows&#39;, this)">
+          🪟 Windows <span class="count" id="cnt-windows">104</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('network', this)">
-          🌐 Networking <span class="count">44</span>
+        <button class="cat-btn" onclick="filterCat(&#39;network&#39;, this)">
+          🌐 Networking <span class="count" id="cnt-network">44</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('email', this)">
-          📧 Email / Outlook <span class="count">18</span>
+        <button class="cat-btn" onclick="filterCat(&#39;email&#39;, this)">
+          📧 Email / Outlook <span class="count" id="cnt-email">18</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('m365', this)">
-          ☁️ M365 / Office <span class="count">7</span>
+        <button class="cat-btn" onclick="filterCat(&#39;m365&#39;, this)">
+          ☁️ M365 / Office <span class="count" id="cnt-m365">7</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('printers', this)">
-          🖨 Printers <span class="count">7</span>
+        <button class="cat-btn" onclick="filterCat(&#39;printers&#39;, this)">
+          🖨 Printers <span class="count" id="cnt-printers">7</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('mobile', this)">
-          📱 Mobile <span class="count">6</span>
+        <button class="cat-btn" onclick="filterCat(&#39;mobile&#39;, this)">
+          📱 Mobile <span class="count" id="cnt-mobile">6</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('security', this)">
-          🔒 Security <span class="count">3</span>
+        <button class="cat-btn" onclick="filterCat(&#39;security&#39;, this)">
+          🔒 Security <span class="count" id="cnt-security">3</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('scripting', this)">
-          💻 Scripting <span class="count">5</span>
+        <button class="cat-btn" onclick="filterCat(&#39;scripting&#39;, this)">
+          💻 Scripting <span class="count" id="cnt-scripting">5</span>
         </button>
-        <button class="cat-btn" onclick="filterCat('hardware', this)">
-          🖥 Hardware <span class="count">4</span>
+        <button class="cat-btn" onclick="filterCat(&#39;hardware&#39;, this)">
+          🖥 Hardware <span class="count" id="cnt-hardware">4</span>
         </button>
+      </div>
+      <div class="sidebar-tags">
+        <div class="sidebar-label">Popular Tags</div>
+        <div class="sidebar-tag-list" id="sidebar-tags"><span class="sidebar-tag-pill" data-tag="#mdm" onclick="filterByTag(&#39;#mdm&#39;)">#mdm</span><span class="sidebar-tag-pill" data-tag="#mobileiron" onclick="filterByTag(&#39;#mobileiron&#39;)">#mobileiron</span><span class="sidebar-tag-pill" data-tag="#password" onclick="filterByTag(&#39;#password&#39;)">#password</span><span class="sidebar-tag-pill" data-tag="#recovery" onclick="filterByTag(&#39;#recovery&#39;)">#recovery</span><span class="sidebar-tag-pill" data-tag="#macOS" onclick="filterByTag(&#39;#macOS&#39;)">#macOS</span><span class="sidebar-tag-pill" data-tag="#apple-silicon" onclick="filterByTag(&#39;#apple-silicon&#39;)">#apple-silicon</span><span class="sidebar-tag-pill" data-tag="#bsod" onclick="filterByTag(&#39;#bsod&#39;)">#bsod</span><span class="sidebar-tag-pill" data-tag="#windows11" onclick="filterByTag(&#39;#windows11&#39;)">#windows11</span><span class="sidebar-tag-pill" data-tag="#drivers" onclick="filterByTag(&#39;#drivers&#39;)">#drivers</span><span class="sidebar-tag-pill" data-tag="#vpn" onclick="filterByTag(&#39;#vpn&#39;)">#vpn</span><span class="sidebar-tag-pill" data-tag="#forticlient" onclick="filterByTag(&#39;#forticlient&#39;)">#forticlient</span><span class="sidebar-tag-pill" data-tag="#certificate" onclick="filterByTag(&#39;#certificate&#39;)">#certificate</span></div>
       </div>
     </div>
 
@@ -803,7 +916,132 @@
         <button class="ai-search-btn" onclick="triggerAISearch()">✨ Ask AI</button>
       </div>
 
-      <div class="it-entries" id="it-entries"></div>
+      <div class="it-toolbar">
+        <div class="it-result-count" id="it-result-count">Showing <strong>12</strong> of 12 cases</div>
+        <select class="it-sort" id="it-sort" onchange="applyFilters()">
+          <option value="newest">↓ Newest first</option>
+          <option value="oldest">↑ Oldest first</option>
+          <option value="az">A → Z</option>
+          <option value="za">Z → A</option>
+        </select>
+        <button class="clear-filters-btn" id="clear-filters-btn" onclick="clearAllFilters()">✕ Clear filters</button>
+        <div class="view-toggle">
+          <button class="vt-btn active" id="vt-grid" onclick="setView(&#39;grid&#39;)" title="Grid view">⊞</button>
+          <button class="vt-btn" id="vt-list" onclick="setView(&#39;list&#39;)" title="List view">☰</button>
+        </div>
+      </div>
+
+      <div class="it-tag-bar" id="it-tag-bar"><span class="it-tag-bar-label">Tags:</span><span class="tag-pill" data-tag="#mdm" onclick="filterByTag(&#39;#mdm&#39;)">#mdm <span style="opacity:0.5">2</span></span><span class="tag-pill" data-tag="#mobileiron" onclick="filterByTag(&#39;#mobileiron&#39;)">#mobileiron <span style="opacity:0.5">2</span></span><span class="tag-pill" data-tag="#password" onclick="filterByTag(&#39;#password&#39;)">#password <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#recovery" onclick="filterByTag(&#39;#recovery&#39;)">#recovery <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#macOS" onclick="filterByTag(&#39;#macOS&#39;)">#macOS <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#apple-silicon" onclick="filterByTag(&#39;#apple-silicon&#39;)">#apple-silicon <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#bsod" onclick="filterByTag(&#39;#bsod&#39;)">#bsod <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#windows11" onclick="filterByTag(&#39;#windows11&#39;)">#windows11 <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#drivers" onclick="filterByTag(&#39;#drivers&#39;)">#drivers <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#vpn" onclick="filterByTag(&#39;#vpn&#39;)">#vpn <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#forticlient" onclick="filterByTag(&#39;#forticlient&#39;)">#forticlient <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#certificate" onclick="filterByTag(&#39;#certificate&#39;)">#certificate <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#outlook" onclick="filterByTag(&#39;#outlook&#39;)">#outlook <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#exchange" onclick="filterByTag(&#39;#exchange&#39;)">#exchange <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#profile" onclick="filterByTag(&#39;#profile&#39;)">#profile <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#filevault" onclick="filterByTag(&#39;#filevault&#39;)">#filevault <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#encryption" onclick="filterByTag(&#39;#encryption&#39;)">#encryption <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#monterey" onclick="filterByTag(&#39;#monterey&#39;)">#monterey <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#crowdstrike" onclick="filterByTag(&#39;#crowdstrike&#39;)">#crowdstrike <span style="opacity:0.5">1</span></span><span class="tag-pill" data-tag="#security" onclick="filterByTag(&#39;#security&#39;)">#security <span style="opacity:0.5">1</span></span></div>
+
+      <div class="it-entries" id="it-entries">
+    <div class="entry-card" onclick="openModal(1)">
+      <div class="entry-cat">MAC</div>
+      <div class="entry-title">MacBook Pro password reset - Intel</div>
+      <div class="entry-snippet">User forgot their MacBook Pro password and cannot log in. How to reset it?</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-11-12</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#password&#39;)">#password</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#recovery&#39;)">#recovery</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#macOS&#39;)">#macOS</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(2)">
+      <div class="entry-cat">MAC</div>
+      <div class="entry-title">M1 MBP 16" MDM recovery - MobileIron</div>
+      <div class="entry-snippet">MacBook Pro 16" M1 locked by MDM after employee departure. Need to reset and re-enroll.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-10-28</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#mdm&#39;)">#mdm</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#mobileiron&#39;)">#mobileiron</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#apple-silicon&#39;)">#apple-silicon</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(3)">
+      <div class="entry-cat">WINDOWS</div>
+      <div class="entry-title">BSOD on Windows 11 - DRIVER_IRQL</div>
+      <div class="entry-snippet">User getting repeated BSOD with DRIVER_IRQL_NOT_LESS_OR_EQUAL. Started after Windows Update.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-09-14</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#bsod&#39;)">#bsod</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#windows11&#39;)">#windows11</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#drivers&#39;)">#drivers</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(4)">
+      <div class="entry-cat">NETWORK</div>
+      <div class="entry-title">FortiClient VPN not connecting - certificate error</div>
+      <div class="entry-snippet">Remote user cannot connect to VPN, getting certificate verification error. Worked before.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-08-03</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#vpn&#39;)">#vpn</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#forticlient&#39;)">#forticlient</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#certificate&#39;)">#certificate</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(5)">
+      <div class="entry-cat">EMAIL</div>
+      <div class="entry-title">Outlook stuck on "Loading Profile" loop</div>
+      <div class="entry-snippet">User Outlook hangs on Loading Profile on startup, never opens inbox.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-07-22</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#outlook&#39;)">#outlook</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#exchange&#39;)">#exchange</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#profile&#39;)">#profile</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(6)">
+      <div class="entry-cat">MAC</div>
+      <div class="entry-title">Monterey FileVault stuck on encryption</div>
+      <div class="entry-snippet">FileVault showing 80% encrypted for 3 days, no progress. Laptop used normally.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-06-17</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#filevault&#39;)">#filevault</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#encryption&#39;)">#encryption</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#monterey&#39;)">#monterey</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(7)">
+      <div class="entry-cat">WINDOWS</div>
+      <div class="entry-title">CrowdStrike Falcon blocking application</div>
+      <div class="entry-snippet">Legitimate business app blocked by CrowdStrike Falcon on Windows 11 after update.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-05-29</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#crowdstrike&#39;)">#crowdstrike</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#security&#39;)">#security</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#whitelist&#39;)">#whitelist</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(8)">
+      <div class="entry-cat">PRINTERS</div>
+      <div class="entry-title">Zebra ZT410 label printer offline after IP change</div>
+      <div class="entry-snippet">Zebra label printer showing as offline after network reconfiguration changed its IP.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-05-01</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#zebra&#39;)">#zebra</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#printer&#39;)">#printer</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#ip&#39;)">#ip</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(9)">
+      <div class="entry-cat">MOBILE</div>
+      <div class="entry-title">iOS MDM profile not installing</div>
+      <div class="entry-snippet">Employee new iPhone cannot install MobileIron MDM profile. Company enrollment fails.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-04-10</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#ios&#39;)">#ios</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#mdm&#39;)">#mdm</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#mobileiron&#39;)">#mobileiron</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(10)">
+      <div class="entry-cat">SCRIPTING</div>
+      <div class="entry-title">PowerShell script to export AD users to CSV</div>
+      <div class="entry-snippet">Need a script to export all Active Directory users with their last logon date and department.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-03-20</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#powershell&#39;)">#powershell</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#activedirectory&#39;)">#activedirectory</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#export&#39;)">#export</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(11)">
+      <div class="entry-cat">NETWORK</div>
+      <div class="entry-title">Cisco ISE guest portal not loading</div>
+      <div class="entry-snippet">Guest wifi portal not redirecting correctly. Users connect to SSID but portal never appears.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-02-14</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#cisco&#39;)">#cisco</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#ise&#39;)">#ise</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#guest&#39;)">#guest</span>
+      </div>
+    </div>
+    <div class="entry-card" onclick="openModal(12)">
+      <div class="entry-cat">M365</div>
+      <div class="entry-title">OneDrive sync error 0x8004de40</div>
+      <div class="entry-snippet">Multiple users getting OneDrive sync error 0x8004de40, files not syncing.</div>
+      <div class="entry-meta">
+        <span class="entry-date">2025-01-30</span>
+        <span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#onedrive&#39;)">#onedrive</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#sync&#39;)">#sync</span><span class="entry-tag" onclick="event.stopPropagation();filterByTag(&#39;#m365&#39;)">#m365</span>
+      </div>
+    </div></div>
 
       <div id="ai-panel">
         <div class="ai-label">✨ AI RESPONSE</div>
@@ -1189,28 +1427,61 @@ function resetChat() {
 }
 
 // ── IT VIEW ──────────────────────────────────────────────────────
+let currentView = 'grid';
+let currentTag = '';
+
+function highlight(text, term) {
+  if (!term) return text;
+  const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+}
+
 function renderCards(data) {
   const container = document.getElementById('it-entries');
+  const term = currentSearch;
+
+  // Update result count
+  const countEl = document.getElementById('it-result-count');
+  if (countEl) countEl.innerHTML = `Showing <strong>${data.length}</strong> of ${KB.length} cases`;
+
+  // Update clear filters button visibility
+  const clearBtn = document.getElementById('clear-filters-btn');
+  if (clearBtn) {
+    const hasFilters = currentSearch || currentCat !== 'all' || currentTag;
+    clearBtn.classList.toggle('visible', !!hasFilters);
+  }
+
   if (!data.length) {
-    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text2);font-family:var(--mono);font-size:13px;">// no results found</div>`;
+    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text2);font-family:var(--mono);font-size:13px;">// no results found<br><br><span style="font-size:11px;opacity:0.5">Try different keywords or clear your filters</span></div>`;
     return;
   }
+
   container.innerHTML = data.map(e => `
     <div class="entry-card" onclick="openModal(${e.id})">
       <div class="entry-cat">${e.cat.toUpperCase()}</div>
-      <div class="entry-title">${e.title}</div>
-      <div class="entry-snippet">${e.question}</div>
+      <div class="entry-title">${highlight(e.title, term)}</div>
+      <div class="entry-snippet">${highlight(e.question, term)}</div>
       <div class="entry-meta">
         <span class="entry-date">${e.date}</span>
-        ${e.tags.map(t=>`<span class="entry-tag">${t}</span>`).join('')}
+        ${e.tags.map(t=>`<span class="entry-tag" onclick="event.stopPropagation();filterByTag('${t}')">${highlight(t, term)}</span>`).join('')}
       </div>
     </div>`).join('');
 }
 
 function filterCat(cat, btn) {
   currentCat = cat;
+  currentTag = '';
   document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
+  document.querySelectorAll('.tag-pill,.sidebar-tag-pill').forEach(p=>p.classList.remove('active'));
+  applyFilters();
+}
+
+function filterByTag(tag) {
+  currentTag = currentTag === tag ? '' : tag;
+  document.querySelectorAll('.tag-pill,.sidebar-tag-pill').forEach(p => {
+    p.classList.toggle('active', p.dataset.tag === tag && currentTag === tag);
+  });
   applyFilters();
 }
 
@@ -1219,16 +1490,68 @@ function searchIT(val) {
   applyFilters();
 }
 
+function setView(v) {
+  currentView = v;
+  const entries = document.getElementById('it-entries');
+  entries.classList.toggle('list-view', v === 'list');
+  document.getElementById('vt-grid').classList.toggle('active', v === 'grid');
+  document.getElementById('vt-list').classList.toggle('active', v === 'list');
+}
+
+function clearAllFilters() {
+  currentSearch = '';
+  currentCat = 'all';
+  currentTag = '';
+  document.getElementById('it-search').value = '';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelector('.cat-btn').classList.add('active');
+  document.querySelectorAll('.tag-pill,.sidebar-tag-pill').forEach(p=>p.classList.remove('active'));
+  applyFilters();
+}
+
 function applyFilters() {
-  let data = KB;
+  let data = [...KB];
   if (currentCat !== 'all') data = data.filter(e => e.cat === currentCat);
+  if (currentTag) data = data.filter(e => e.tags.includes(currentTag));
   if (currentSearch) data = data.filter(e =>
     e.title.toLowerCase().includes(currentSearch) ||
     e.question.toLowerCase().includes(currentSearch) ||
     e.resolution.toLowerCase().includes(currentSearch) ||
-    e.tags.some(t => t.includes(currentSearch))
+    e.tags.some(t => t.toLowerCase().includes(currentSearch))
   );
+
+  // Sort
+  const sort = document.getElementById('it-sort')?.value || 'newest';
+  if (sort === 'newest') data.sort((a,b) => b.date.localeCompare(a.date));
+  else if (sort === 'oldest') data.sort((a,b) => a.date.localeCompare(b.date));
+  else if (sort === 'az') data.sort((a,b) => a.title.localeCompare(b.title));
+  else if (sort === 'za') data.sort((a,b) => b.title.localeCompare(a.title));
+
   renderCards(data);
+}
+
+function buildTagBar() {
+  // Collect all tags + count frequency
+  const freq = {};
+  KB.forEach(e => e.tags.forEach(t => { freq[t] = (freq[t]||0)+1; }));
+  const sorted = Object.entries(freq).sort((a,b)=>b[1]-a[1]);
+
+  // Top tag bar (horizontal scroll above cards)
+  const bar = document.getElementById('it-tag-bar');
+  if (bar) {
+    bar.innerHTML = '<span class="it-tag-bar-label">Tags:</span>' +
+      sorted.slice(0,20).map(([t,c])=>
+        `<span class="tag-pill" data-tag="${t}" onclick="filterByTag('${t}')">${t} <span style="opacity:0.5">${c}</span></span>`
+      ).join('');
+  }
+
+  // Sidebar popular tags
+  const sidebar = document.getElementById('sidebar-tags');
+  if (sidebar) {
+    sidebar.innerHTML = sorted.slice(0,12).map(([t,c])=>
+      `<span class="sidebar-tag-pill" data-tag="${t}" onclick="filterByTag('${t}')">${t}</span>`
+    ).join('');
+  }
 }
 
 function openModal(id) {
@@ -1285,6 +1608,7 @@ document.addEventListener('keydown', e => {
 });
 
 // Init
+buildTagBar();
 renderCards(KB);
 </script>
 
@@ -1299,10 +1623,10 @@ renderCards(KB);
   <div class="admin-stats" id="admin-stats"></div>
 
   <div class="admin-filters">
-    <button class="af-btn active" onclick="filterSessions('all',this)">All</button>
-    <button class="af-btn red" onclick="filterSessions('attention',this)">🔴 Needs Attention</button>
-    <button class="af-btn amber" onclick="filterSessions('ongoing',this)">🟡 Ongoing</button>
-    <button class="af-btn green" onclick="filterSessions('solved',this)">🟢 Solved</button>
+    <button class="af-btn active" onclick="filterSessions(&#39;all&#39;,this)">All</button>
+    <button class="af-btn red" onclick="filterSessions(&#39;attention&#39;,this)">🔴 Needs Attention</button>
+    <button class="af-btn amber" onclick="filterSessions(&#39;ongoing&#39;,this)">🟡 Ongoing</button>
+    <button class="af-btn green" onclick="filterSessions(&#39;solved&#39;,this)">🟢 Solved</button>
     <button class="af-btn" onclick="clearAllSessions()" style="margin-left:auto;color:var(--red);border-color:rgba(255,68,68,0.3);">🗑 Clear All</button>
   </div>
 
@@ -1529,5 +1853,6 @@ document.getElementById('session-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('session-modal')) closeSessionModal();
 });
 </script>
-</body>
-</html>
+
+
+</body></html>
