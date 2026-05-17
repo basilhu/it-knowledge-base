@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0044)https://basilhu.github.io/it-knowledge-base/ -->
+<!-- saved from url=(0066)file:///C:/Users/basilh/Downloads/IT_KB_v2026.05.17_build07_1.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -787,12 +787,23 @@
   .test-btn { background:transparent; border:1px solid var(--border); color:var(--text2);
     font-size:11px; padding:7px 14px; border-radius:8px; cursor:pointer; transition:all 0.15s; }
   .test-btn:hover { border-color:var(--primary); color:var(--primary); }
+
+  /* ── TOAST ── */
+  #toast { position:fixed; bottom:24px; right:24px; z-index:99999;
+    background:var(--bg2); border:1px solid var(--border); border-radius:12px;
+    padding:12px 18px; font-size:13px; color:var(--text);
+    box-shadow:0 8px 32px rgba(0,0,0,0.4); display:none;
+    align-items:center; gap:10px; max-width:320px; animation: slideIn 0.3s ease; }
+  #toast.show { display:flex; }
+  #toast .toast-icon { font-size:18px; flex-shrink:0; }
+  #toast .toast-msg  { flex:1; line-height:1.4; }
+  @keyframes slideIn { from{transform:translateY(20px);opacity:0} to{transform:none;opacity:1} }
 </style>
 </head>
 <body>
 
 <!-- ── ACCESS GATE ── -->
-<div id="access-gate" class="hidden">
+<div id="access-gate">
   <div class="gate-logo">// secure access portal</div>
   <div class="gate-title">IT Knowledge Base</div>
   <div class="gate-sub">restricted system — authorization required</div>
@@ -808,7 +819,7 @@
 
 
 <!-- ── NAME SCREEN ── -->
-<div id="name-screen" class="">
+<div id="name-screen">
   <div class="ns-title">👋 Welcome to IT Help Desk</div>
   <div class="ns-sub">before we start — who are we helping today?</div>
   <div class="ns-box">
@@ -819,7 +830,7 @@
 </div>
 
 <!-- ── ROLE PICKER ───────────────── -->
-<div id="role-picker" style="display: none;">
+<div id="role-picker">
   <div class="rp-header">
     <div class="rp-logo">// system access portal</div>
     <div class="rp-title" id="rp-title-secret" onclick="handleSecretClick()" title="">IT Knowledge Base</div>
@@ -841,11 +852,11 @@
     </div>
   </div>
 
-  <div class="rp-session" id="session-id">session_id: W74V93LUE</div>
+  <div class="rp-session" id="session-id">session_id: G0G8C1XNN</div>
 </div>
 
 <!-- ── END USER VIEW ─────────────── -->
-<div id="enduser-view" class="">
+<div id="enduser-view">
   <div class="eu-header">
     <div class="eu-logo-wrap"><div class="eu-logo-icon">💬</div><div><div class="eu-logo">IT Help Desk</div><div class="eu-logo-sub">Powered by AI</div></div></div><div style="font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:0.1em;opacity:0.4;">v2026.05.17 — 12:29</div>
     <div style="display:flex;gap:8px;">
@@ -854,17 +865,7 @@
     </div>
   </div>
 
-  <div class="eu-chat" id="eu-chat"><div class="msg ai">
-    <div class="msg-avatar">🤖</div>
-    <div class="msg-bubble">
-      Hi <strong>test 8</strong>! 👋 I'm your IT Help Desk assistant.<br><br><strong>To get started — what's the issue you're experiencing?</strong><br><br>You can describe it in your own words, or pick a common topic below.
-      <div class="quick-btns"><button class="quick-btn" onclick="sendQuickReply(&#39;🔑 Password / Login issue&#39;)"> 🔑 Password / Login issue</button><button class="quick-btn" onclick="sendQuickReply(&#39;📶 VPN / Remote work issue&#39;)"> 📶 VPN / Remote work issue</button><button class="quick-btn" onclick="sendQuickReply(&#39;📧 Outlook / Email problem&#39;)"> 📧 Outlook / Email problem</button><button class="quick-btn" onclick="sendQuickReply(&#39;💻 Computer is slow or crashing&#39;)"> 💻 Computer is slow or crashing</button><button class="quick-btn" onclick="sendQuickReply(&#39;🖨 Printer not working&#39;)"> 🖨 Printer not working</button><button class="quick-btn" onclick="sendQuickReply(&#39;📱 Mobile device / phone issue&#39;)"> 📱 Mobile device / phone issue</button><button class="quick-btn" onclick="sendQuickReply(&#39;🌐 No internet / network issue&#39;)"> 🌐 No internet / network issue</button><button class="quick-btn" onclick="sendQuickReply(&#39;🔒 MFA / Two-factor auth&#39;)"> 🔒 MFA / Two-factor auth</button></div>
-    </div></div><div class="msg user"><div class="msg-avatar">👤</div><div class="msg-bubble">🔑 Password / Login issue</div></div><div class="msg ai">
-    <div class="msg-avatar">🤖</div>
-    <div class="msg-bubble">
-      Got it — password issue. Are you trying to log in to your **computer**, your **email (Outlook)**, or something else?
-      <div class="quick-btns"><button class="quick-btn" onclick="sendQuickReply(&#39;My computer (Windows/Mac login)&#39;)"> My computer (Windows/Mac login)</button><button class="quick-btn" onclick="sendQuickReply(&#39;Outlook / Email&#39;)"> Outlook / Email</button><button class="quick-btn" onclick="sendQuickReply(&#39;Company system / website&#39;)"> Company system / website</button><button class="quick-btn" onclick="sendQuickReply(&#39;Something else&#39;)"> Something else</button></div>
-    </div></div></div>
+  <div class="eu-chat" id="eu-chat"></div>
 
   <div class="eu-input-area">
     <div class="eu-input-wrap">
@@ -1139,6 +1140,7 @@ function backToRolePicker() {
     'session_id: ' + Math.random().toString(36).substr(2,9).toUpperCase();
   chatHistory = [];
   conversationContext = {};
+  window._teamsNotified = false;
   currentUserName = '';
   currentUserIP = '';
   document.getElementById('ns-input').value = '';
@@ -1150,6 +1152,7 @@ function startEndUserChat() {
   chat.innerHTML = '';
   chatHistory = [];
   conversationContext = {};
+  window._teamsNotified = false;
   createSession();
   addAIMessage(`Hi ${currentUserName ? '<strong>' + currentUserName + '</strong>' : 'there'}! 👋 I'm your IT Help Desk assistant.
 
@@ -1192,6 +1195,18 @@ function addUserMessage(text) {
   chatHistory.push({ role: 'user', content: text });
   if (!activeSession) createSession();
   updateActiveSession();
+
+  // Send Teams notification on first user message only
+  if (!window._teamsNotified) {
+    window._teamsNotified = true;
+    sendTeamsNewSession({
+      userName: currentUserName || 'Unknown',
+      ip: currentUserIP || '—',
+      question: text,
+      sessionId: activeSession ? activeSession.id.slice(-6).toUpperCase() : '—',
+      time: new Date().toLocaleString()
+    });
+  }
 }
 
 function addTyping() {
@@ -1874,7 +1889,7 @@ function exportSessionsCSV() {
 </div>
 
 <!-- ── ADMIN VIEW ───────────────── -->
-<div id="admin-view" class="active">
+<div id="admin-view">
   <div class="admin-header">
     <div class="admin-logo"><div class="admin-logo-icon">🔐</div> Admin Monitor</div>
     <div class="admin-badge">🔒 restricted</div>
@@ -1882,12 +1897,7 @@ function exportSessionsCSV() {
     <button class="eu-btn" onclick="backToRolePicker()" style="margin-left:8px;">← Exit</button>
   </div>
 
-  <div class="admin-stats" id="admin-stats">
-    <div class="stat-box"><div class="stat-num">5</div><div class="stat-label">Total Sessions</div></div>
-    <div class="stat-box green"><div class="stat-num">0</div><div class="stat-label">Solved</div></div>
-    <div class="stat-box red"><div class="stat-num">2</div><div class="stat-label">Need Attention</div></div>
-    <div class="stat-box amber"><div class="stat-num">3</div><div class="stat-label">Ongoing</div></div>
-  </div>
+  <div class="admin-stats" id="admin-stats"></div>
 
   <div class="admin-filters">
     <button class="af-btn active" onclick="filterSessions(&#39;all&#39;,this)">All</button>
@@ -1898,73 +1908,7 @@ function exportSessionsCSV() {
     <button class="af-btn" onclick="clearAllSessions()" style="color:var(--red);border-color:rgba(255,68,68,0.3);">🗑 Clear All</button>
   </div>
 
-  <div class="admin-list" id="admin-list"><div class="session-card status-ongoing" onclick="openSessionModal(&#39;mp9s23is2wbkv&#39;)">
-      <div class="sc-top">
-        <span class="sc-status ongoing">🟡 Ongoing</span>
-        <span class="sc-id">#s2wbkv</span>
-        <span class="sc-time">5/17/2026, 3:54:51 PM</span>
-      </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px;">👤 test 8 &nbsp;·&nbsp; <span style="color:var(--text2);">🌐 37.142.120.122</span></div>
-      <div class="sc-issue">🔑 Password / Login issue</div>
-      <div class="sc-summary">Hi test 8! 👋 I'm your IT Help Desk assistant.
-
-To get started — what's the issue you're experiencing?
-
-You can describe it in your own words, or pick a common topic below.</div>
-      <div class="sc-msgs">2 messages exchanged</div>
-    </div><div class="session-card status-ongoing" onclick="openSessionModal(&#39;mp9rsjojpmhz1&#39;)">
-      <div class="sc-top">
-        <span class="sc-status ongoing">🟡 Ongoing</span>
-        <span class="sc-id">#jpmhz1</span>
-        <span class="sc-time">5/17/2026, 3:47:25 PM</span>
-      </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px;">👤 Test 6 &nbsp;·&nbsp; <span style="color:var(--text2);">🌐 37.142.120.122</span></div>
-      <div class="sc-issue">💻 Computer is slow or crashing</div>
-      <div class="sc-summary">Computer running slow. Is it slow all the time, or only when doing specific things?</div>
-      <div class="sc-msgs">4 messages exchanged</div>
-    </div><div class="session-card status-attention" onclick="openSessionModal(&#39;mp9rnudegghj6&#39;)">
-      <div class="sc-top">
-        <span class="sc-status attention">🔴 Needs Attention</span>
-        <span class="sc-id">#egghj6</span>
-        <span class="sc-time">5/17/2026, 3:43:46 PM</span>
-      </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px;">👤 Webhooks test 4 &nbsp;·&nbsp; <span style="color:var(--text2);">🌐 37.142.120.122</span></div>
-      <div class="sc-issue">🖨 Printer not working</div>
-      <div class="sc-summary">Setting up MFA for the first time:
-
-1. Download the Microsoft Authenticator app on your phone (App Store / Google Play)
-2. Go to aka.ms/mfasetup on your computer
-3. Choose 'Mobile app' → 'Receive noti</div>
-      <div class="sc-msgs">14 messages exchanged</div>
-    </div><div class="session-card status-attention" onclick="openSessionModal(&#39;mp9rhidxixe6z&#39;)">
-      <div class="sc-top">
-        <span class="sc-status attention">🔴 Needs Attention</span>
-        <span class="sc-id">#xixe6z</span>
-        <span class="sc-time">5/17/2026, 3:38:50 PM</span>
-      </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px;">👤 Test Teams Webhooks 3 &nbsp;·&nbsp; <span style="color:var(--text2);">🌐 37.142.120.122</span></div>
-      <div class="sc-issue">📶 VPN / Remote work issue</div>
-      <div class="sc-summary">Let's fix your VPN connection:
-
-1. Check your internet — open a website without VPN first
-2. Restart the VPN app (FortiClient/Cisco AnyConnect) — close it fully and reopen
-3. Restart your computer — t</div>
-      <div class="sc-msgs">6 messages exchanged</div>
-    </div><div class="session-card status-ongoing" onclick="openSessionModal(&#39;mp9lkg5s2e7il&#39;)">
-      <div class="sc-top">
-        <span class="sc-status ongoing">🟡 Ongoing</span>
-        <span class="sc-id">#s2e7il</span>
-        <span class="sc-time">5/17/2026, 12:53:10 PM</span>
-      </div>
-      <div style="font-family:var(--mono);font-size:10px;color:var(--blue);margin-bottom:4px;">👤 Unknown &nbsp;·&nbsp; <span style="color:var(--text2);">🌐 —</span></div>
-      <div class="sc-issue">🔑 Password / Login issue</div>
-      <div class="sc-summary">Hi! 👋 I'm your IT Help Desk assistant.
-
-To get started — what's the issue you're experiencing?
-
-You can describe it in your own words, or pick a common topic below.</div>
-      <div class="sc-msgs">2 messages exchanged</div>
-    </div></div>
+  <div class="admin-list" id="admin-list"></div>
 </div>
 
 <!-- ── SESSION DETAIL MODAL ─────── -->
@@ -2261,7 +2205,7 @@ function clearTeamsWebhook() {
   setStatus('teams-status','err','Webhook removed.');
 }
 async function testTeamsWebhook() {
-  const url = localStorage.getItem('it_kb_teams_webhook');
+  const url = localStorage.getItem('it_kb_teams_webhook') || 'https://default49c535025f5d45769bd6bd4e1842ef.33.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/94f25b38dc17448b8f7ea31b26f7844a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=87ex-8JViAg5Sn8SXUTmXnpMVov8lx6clADyTdL_6V8';
   if (!url) { setStatus('teams-status','err','No webhook saved yet.'); return; }
   setStatus('teams-status','ok','Sending test message...');
   const result = await sendTeamsMessage(url, {
@@ -2299,7 +2243,7 @@ async function sendTeamsMessage(url, data) {
                 "text": data.title || "🔴 IT Help Desk — Needs Attention",
                 "weight": "Bolder",
                 "size": "Medium",
-                "color": data.title && data.title.includes('Test') ? "Good" : "Attention"
+                "color": data.title && data.title.includes('Test') ? "Good" : data.isNew ? "Accent" : "Attention"
               },
               {
                 "type": "FactSet",
@@ -2360,8 +2304,43 @@ async function sendTeamsMessage(url, data) {
     return { ok: false, error: e.message };
   }
 }
+async function sendTeamsNewSession(data) {
+  const WEBHOOK_URL = 'https://default49c535025f5d45769bd6bd4e1842ef.33.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/94f25b38dc17448b8f7ea31b26f7844a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=87ex-8JViAg5Sn8SXUTmXnpMVov8lx6clADyTdL_6V8';
+  try {
+    const body = {
+      type: 'message',
+      attachments: [{
+        contentType: 'application/vnd.microsoft.card.adaptive',
+        content: {
+          '$schema': 'http://adaptivecards.io/schemas/adaptive-card.json',
+          type: 'AdaptiveCard', version: '1.4',
+          body: [
+            { type: 'TextBlock', text: '💬 New IT Help Desk Session', weight: 'Bolder', size: 'Medium' },
+            { type: 'FactSet', facts: [
+              { title: 'User',    value: data.userName || 'Unknown' },
+              { title: 'IP',      value: data.ip || '-' },
+              { title: 'Issue',   value: data.question || '-' },
+              { title: 'Time',    value: data.time || '' }
+            ]}
+          ]
+        }
+      }]
+    };
+    const resp = await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    const t = document.getElementById('toast');
+    if (t) { t.querySelector('.toast-icon').textContent = '✅'; t.querySelector('.toast-msg').textContent = 'IT team notified! Status: ' + resp.status; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),5000); }
+  } catch(e) {
+    const t = document.getElementById('toast');
+    if (t) { t.querySelector('.toast-icon').textContent = '❌'; t.querySelector('.toast-msg').textContent = 'Error: ' + e.message; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),8000); }
+  }
+}
+
 async function sendTeamsAlert(session) {
-  const url = localStorage.getItem('it_kb_teams_webhook');
+  const url = localStorage.getItem('it_kb_teams_webhook') || 'https://default49c535025f5d45769bd6bd4e1842ef.33.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/94f25b38dc17448b8f7ea31b26f7844a/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=87ex-8JViAg5Sn8SXUTmXnpMVov8lx6clADyTdL_6V8';
   if (!url) return;
   const result = await sendTeamsMessage(url, {
     title: '🔴 IT Help Desk — User Needs Attention',
@@ -2371,7 +2350,8 @@ async function sendTeamsAlert(session) {
     time: new Date(session.startTime).toLocaleString(),
     messages: session.history ? session.history.length : 0
   });
-  if (result && !result.ok) console.warn('Teams alert failed:', result.error);
+  if (result && result.ok) showToast('🔴', 'Teams alerted: Needs Attention');
+  else if (result && !result.ok) console.warn('Teams alert failed:', result.error);
 }
 function saveAppPassword() {
   const val = document.getElementById('app-pass-input').value.trim();
@@ -2380,6 +2360,16 @@ function saveAppPassword() {
   document.getElementById('app-pass-input').value = '';
   setStatus('apppass-status','ok','✓ Password updated.');
 }
+
+function showToast(icon, msg, duration=4000) {
+  const t = document.getElementById('toast');
+  t.querySelector('.toast-icon').textContent = icon;
+  t.querySelector('.toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(window._toastTimer);
+  window._toastTimer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
 function setStatus(elId, type, msg) {
   const el = document.getElementById(elId);
   if (!el) return;
@@ -2392,7 +2382,7 @@ document.getElementById('settings-modal').addEventListener('click', e => {
 </script>
 
 <!-- ── SETTINGS MODAL ── -->
-<div id="settings-modal" class="">
+<div id="settings-modal">
   <div class="st-box">
     <button class="modal-close" onclick="closeSettings()">✕</button>
     <div class="st-title">⚙️ Integrations &amp; Settings</div>
@@ -2425,7 +2415,7 @@ document.getElementById('settings-modal').addEventListener('click', e => {
     <div class="st-section">
       <div class="st-section-title">
         💬 Microsoft Teams Webhook
-        <span class="st-badge set" id="teams-badge">Set ✓</span>
+        <span class="st-badge not-set" id="teams-badge">Not Set</span>
       </div>
       <div class="st-section-desc">
         Sends an alert to a Teams channel whenever a session is marked <strong style="color:var(--red)">Needs Attention</strong>.<br>
@@ -2439,7 +2429,7 @@ document.getElementById('settings-modal').addEventListener('click', e => {
         <button class="test-btn" onclick="testTeamsWebhook()">🧪 Send Test Message</button>
         <button class="st-clear-btn" onclick="clearTeamsWebhook()">Clear</button>
       </div>
-      <div class="st-status ok" id="teams-status"></div>
+      <div class="st-status" id="teams-status"></div>
     </div>
 
     <hr class="st-divider">
@@ -2457,6 +2447,7 @@ document.getElementById('settings-modal').addEventListener('click', e => {
   </div>
 </div>
 
+<div id="toast"><span class="toast-icon"></span><span class="toast-msg"></span></div>
 
 
 </body></html>
