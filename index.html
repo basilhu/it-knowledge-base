@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0067)file:///C:/Users/basilh/Downloads/IT_Knowledge_Base_Preview_13.html -->
+<!-- saved from url=(0067)file:///C:/Users/basilh/Downloads/IT_Knowledge_Base_Preview_15.html -->
 <html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -751,12 +751,48 @@
     --border:rgba(251,191,36,0.2); --glow:0 0 20px rgba(251,191,36,0.2); }
   body.theme-blue  { --primary:#38bdf8; --primary2:#0ea5e9; --purple:#818cf8;
     --border:rgba(56,189,248,0.2); --glow:0 0 20px rgba(56,189,248,0.2); }
+
+  /* ── SETTINGS PANEL ── */
+  #settings-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.75);
+    backdrop-filter:blur(8px); z-index:9300; align-items:center; justify-content:center; padding:20px; }
+  #settings-modal.active { display:flex; }
+  .st-box { background:var(--bg2); border:1px solid var(--border); border-radius:20px;
+    width:100%; max-width:580px; max-height:88vh; overflow-y:auto; padding:32px; position:relative; }
+  .st-title { font-size:18px; font-weight:700; color:var(--text); margin-bottom:6px; }
+  .st-sub { font-size:13px; color:var(--text2); margin-bottom:28px; }
+  .st-section { margin-bottom:28px; }
+  .st-section-title { font-size:13px; font-weight:700; color:var(--text); margin-bottom:4px;
+    display:flex; align-items:center; gap:8px; }
+  .st-section-desc { font-size:12px; color:var(--text2); margin-bottom:12px; line-height:1.5; }
+  .st-input-wrap { display:flex; gap:8px; }
+  .st-input { flex:1; background:var(--bg3); border:1.5px solid var(--border2); color:var(--text);
+    font-family:var(--mono); font-size:12px; padding:11px 14px; border-radius:10px;
+    outline:none; transition:all 0.2s; }
+  .st-input:focus { border-color:var(--primary); box-shadow:0 0 0 3px rgba(129,140,248,0.1); }
+  .st-input::placeholder { color:var(--text3); font-size:11px; }
+  .st-save-btn { background:linear-gradient(135deg,var(--primary2),var(--purple));
+    border:none; color:#fff; font-size:12px; font-weight:700;
+    padding:11px 18px; border-radius:10px; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+  .st-save-btn:hover { opacity:0.9; transform:translateY(-1px); }
+  .st-clear-btn { background:transparent; border:1px solid rgba(248,113,113,0.3); color:var(--red);
+    font-size:11px; padding:8px 14px; border-radius:8px; cursor:pointer; transition:all 0.15s; }
+  .st-clear-btn:hover { background:rgba(248,113,113,0.08); }
+  .st-status { font-size:11px; margin-top:8px; min-height:16px; font-weight:500; }
+  .st-status.ok  { color:var(--green); }
+  .st-status.err { color:var(--red); }
+  .st-divider { border:none; border-top:1px solid var(--border2); margin:24px 0; }
+  .st-badge { font-size:10px; font-weight:700; padding:2px 8px; border-radius:20px; }
+  .st-badge.set     { background:rgba(74,222,128,0.12); color:var(--green); }
+  .st-badge.not-set { background:rgba(248,113,113,0.12); color:var(--red); }
+  .test-btn { background:transparent; border:1px solid var(--border); color:var(--text2);
+    font-size:11px; padding:7px 14px; border-radius:8px; cursor:pointer; transition:all 0.15s; }
+  .test-btn:hover { border-color:var(--primary); color:var(--primary); }
 </style>
 </head>
-<body class="">
+<body>
 
 <!-- ── ACCESS GATE ── -->
-<div id="access-gate" class="hidden">
+<div id="access-gate">
   <div class="gate-logo">// secure access portal</div>
   <div class="gate-title">IT Knowledge Base</div>
   <div class="gate-sub">restricted system — authorization required</div>
@@ -783,7 +819,7 @@
 </div>
 
 <!-- ── ROLE PICKER ───────────────── -->
-<div id="role-picker" style="display: none;">
+<div id="role-picker">
   <div class="rp-header">
     <div class="rp-logo">// system access portal</div>
     <div class="rp-title" id="rp-title-secret" onclick="handleSecretClick()" title="">IT Knowledge Base</div>
@@ -805,13 +841,13 @@
     </div>
   </div>
 
-  <div class="rp-session" id="session-id">session_id: 5NWI13QK2</div>
+  <div class="rp-session" id="session-id">session_id: I1J07EGJY</div>
 </div>
 
 <!-- ── END USER VIEW ─────────────── -->
 <div id="enduser-view">
   <div class="eu-header">
-    <div class="eu-logo-wrap"><div class="eu-logo-icon">💬</div><div><div class="eu-logo">IT Help Desk</div><div class="eu-logo-sub">Powered by AI</div></div></div><div style="font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:0.1em;opacity:0.4;">v2026.05.17 — 10:44</div>
+    <div class="eu-logo-wrap"><div class="eu-logo-icon">💬</div><div><div class="eu-logo">IT Help Desk</div><div class="eu-logo-sub">Powered by AI</div></div></div><div style="font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:0.1em;opacity:0.4;">v2026.05.17 — 12:29</div>
     <div style="display:flex;gap:8px;">
       <button class="eu-btn" onclick="resetChat()">↺ New</button>
       <button class="eu-btn" onclick="backToRolePicker()">← Switch Role</button>
@@ -829,17 +865,17 @@
 </div>
 
 <!-- ── IT VIEW ───────────────────── -->
-<div id="it-view" class="active">
+<div id="it-view">
   <div class="it-header">
     <button class="mobile-menu-btn" onclick="toggleSidebar()" title="Menu">☰</button>
     <div class="it-logo"><div class="it-logo-icon">🛠</div> IT Knowledge Base</div>
-    <div class="it-status">ONLINE</div><div style="font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:0.15em;opacity:0.5;">v2026.05.17 — 10:44</div>
+    <div class="it-status">ONLINE</div><div style="font-family:var(--mono);font-size:9px;color:var(--text2);letter-spacing:0.15em;opacity:0.5;">v2026.05.17 — 12:29</div>
     <div class="theme-switcher" id="theme-switcher">
       <button class="theme-toggle-btn" onclick="toggleThemeDropdown()">
         <span class="theme-dot th-green" id="current-theme-dot"></span>
         <span id="current-theme-label">Theme</span> ▾
       </button>
-      <div class="theme-dropdown open" id="theme-dropdown">
+      <div class="theme-dropdown" id="theme-dropdown">
         <button class="theme-opt active" id="th-opt-green" onclick="setTheme(&#39;green&#39;)">
           <span class="th-btn th-green"></span> Terminal Green
         </button>
@@ -989,7 +1025,8 @@
       return;
     }
 
-    if (val === GATE_PASS) {
+    const effectivePass = localStorage.getItem('it_kb_gate_pass') || GATE_PASS;
+    if (val === effectivePass) {
       sessionStorage.setItem(GATE_KEY, 'ok');
       sessionStorage.removeItem('gate_attempts');
       document.getElementById('access-gate').classList.add('hidden');
@@ -1378,24 +1415,27 @@ async function callChatAPI(userMsg) {
     return;
   }
 
-  // Try AI as fallback
-  const kbContext = KB.map(e => `[${e.cat}] ${e.title}: ${e.resolution}`).join('\n');
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `You are a friendly IT Help Desk assistant helping non-technical users. Ask ONE clarifying question to narrow down the issue. Keep responses under 120 words. No server names, IPs, or PowerShell commands. Simple language only. If needs IT intervention say "Please contact your IT helpdesk."\n\nKB:\n${kbContext}`,
-        messages: chatHistory.slice(-6).map(m => ({ role: m.role, content: m.content }))
-      })
-    });
-    const data = await resp.json();
-    removeTyping();
-    const reply = data.content?.[0]?.text || '';
-    if (reply) { addAIMessage(reply); return; }
-  } catch(e) { /* AI unavailable, use fallback */ }
+  // Try AI as fallback (uses stored API key if available)
+  const storedKey = localStorage.getItem('it_kb_anthropic_key');
+  if (storedKey) {
+    const kbContext = KB.map(e => `[${e.cat}] ${e.title}: ${e.resolution}`).join('\n');
+    try {
+      const resp = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': storedKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-allow-browser': 'true' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1000,
+          system: `You are a friendly IT Help Desk assistant helping non-technical users. Ask ONE clarifying question to narrow down the issue. Keep responses under 120 words. No server names, IPs, or PowerShell commands. Simple language only. If needs IT intervention say "Please contact your IT helpdesk."\n\nKB:\n${kbContext}`,
+          messages: chatHistory.slice(-6).map(m => ({ role: m.role, content: m.content }))
+        })
+      });
+      const data = await resp.json();
+      removeTyping();
+      const reply = data.content?.[0]?.text || '';
+      if (reply) { addAIMessage(reply); return; }
+    } catch(e) { /* AI unavailable, use fallback */ }
+  }
 
   // Generic fallback if nothing matched
   removeTyping();
@@ -1809,7 +1849,7 @@ function exportSessionsCSV() {
 </div>
 
 <!-- ── KEYBOARD SHORTCUTS MODAL ── -->
-<div id="kb-shortcuts-modal" class="">
+<div id="kb-shortcuts-modal">
   <div class="ks-box">
     <button class="modal-close" onclick="document.getElementById(&#39;kb-shortcuts-modal&#39;).classList.remove(&#39;active&#39;)" style="position:absolute;top:16px;right:16px;"></button>
     <div class="ks-title">⌨ KEYBOARD SHORTCUTS</div>
@@ -1828,6 +1868,7 @@ function exportSessionsCSV() {
   <div class="admin-header">
     <div class="admin-logo"><div class="admin-logo-icon">🔐</div> Admin Monitor</div>
     <div class="admin-badge">🔒 restricted</div>
+    <button class="eu-btn" onclick="openSettings()">⚙ Settings</button>
     <button class="eu-btn" onclick="backToRolePicker()" style="margin-left:8px;">← Exit</button>
   </div>
 
@@ -2045,6 +2086,7 @@ function updateSessionStatus(id, status) {
     renderStats();
     renderSessionList();
     closeSessionModal();
+    if (status === 'attention') sendTeamsAlert(sessions[idx]);
   }
 }
 
@@ -2069,7 +2111,271 @@ function clearAllSessions() {
 document.getElementById('session-modal').addEventListener('click', e => {
   if (e.target === document.getElementById('session-modal')) closeSessionModal();
 });
+
+// ── SETTINGS ────────────────────────────────────────────────────
+function openSettings() {
+  const ak = localStorage.getItem('it_kb_anthropic_key') || '';
+  const tw = localStorage.getItem('it_kb_teams_webhook') || '';
+  document.getElementById('anthropic-key-input').value = ak ? '••••••••••••••••' : '';
+  document.getElementById('teams-webhook-input').value = tw ? '••••••••••••••••' : '';
+  updateSettingsBadges();
+  document.getElementById('settings-modal').classList.add('active');
+}
+function closeSettings() {
+  document.getElementById('settings-modal').classList.remove('active');
+  ['anthropic-status','teams-status','apppass-status'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.textContent = '';
+  });
+}
+function updateSettingsBadges() {
+  const ak = localStorage.getItem('it_kb_anthropic_key');
+  const tw = localStorage.getItem('it_kb_teams_webhook');
+  const ab = document.getElementById('anthropic-badge');
+  const tb = document.getElementById('teams-badge');
+  if (ab) { ab.textContent = ak ? 'Set ✓' : 'Not Set'; ab.className = 'st-badge ' + (ak?'set':'not-set'); }
+  if (tb) { tb.textContent = tw ? 'Set ✓' : 'Not Set'; tb.className = 'st-badge ' + (tw?'set':'not-set'); }
+}
+function saveAnthropicKey() {
+  const val = document.getElementById('anthropic-key-input').value.trim();
+  if (!val || val.startsWith('•')) { setStatus('anthropic-status','err','Enter a valid key first.'); return; }
+  localStorage.setItem('it_kb_anthropic_key', val);
+  document.getElementById('anthropic-key-input').value = '••••••••••••••••';
+  updateSettingsBadges();
+  setStatus('anthropic-status','ok','✓ API key saved. AI chat is now enabled.');
+}
+function clearAnthropicKey() {
+  localStorage.removeItem('it_kb_anthropic_key');
+  document.getElementById('anthropic-key-input').value = '';
+  updateSettingsBadges();
+  setStatus('anthropic-status','err','Key removed.');
+}
+async function testAnthropicKey() {
+  const key = localStorage.getItem('it_kb_anthropic_key');
+  if (!key) { setStatus('anthropic-status','err','No key saved yet.'); return; }
+  setStatus('anthropic-status','ok','Testing...');
+  try {
+    const r = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','x-api-key':key,'anthropic-version':'2023-06-01','anthropic-dangerous-allow-browser':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:10,messages:[{role:'user',content:'Hi'}]})
+    });
+    const d = await r.json();
+    if (d.content?.[0]?.text) setStatus('anthropic-status','ok','✓ Connection successful! AI chat is working.');
+    else setStatus('anthropic-status','err','✗ Key rejected: ' + (d.error?.message || 'Unknown error'));
+  } catch(e) { setStatus('anthropic-status','err','✗ Request failed. Check your connection.'); }
+}
+function saveTeamsWebhook() {
+  const val = document.getElementById('teams-webhook-input').value.trim();
+  if (!val || val.startsWith('•')) { setStatus('teams-status','err','Enter a valid webhook URL first.'); return; }
+  if (!val.startsWith('https://')) { setStatus('teams-status','err','URL must start with https://'); return; }
+  localStorage.setItem('it_kb_teams_webhook', val);
+  document.getElementById('teams-webhook-input').value = '••••••••••••••••';
+  updateSettingsBadges();
+  setStatus('teams-status','ok','✓ Webhook saved. Teams alerts are enabled.');
+}
+function clearTeamsWebhook() {
+  localStorage.removeItem('it_kb_teams_webhook');
+  document.getElementById('teams-webhook-input').value = '';
+  updateSettingsBadges();
+  setStatus('teams-status','err','Webhook removed.');
+}
+async function testTeamsWebhook() {
+  const url = localStorage.getItem('it_kb_teams_webhook');
+  if (!url) { setStatus('teams-status','err','No webhook saved yet.'); return; }
+  setStatus('teams-status','ok','Sending test message...');
+  const result = await sendTeamsMessage(url, {
+    title: '🧪 IT Knowledge Base — Test Alert',
+    userName: 'Test User', issue: 'This is a test notification from your IT Knowledge Base',
+    sessionId: 'TEST-' + Date.now().toString(36).toUpperCase(),
+    time: new Date().toLocaleString(), ip: '—', messages: 0
+  });
+  if (result && result.ok) {
+    setStatus('teams-status','ok','✓ Test message sent! Check your Teams channel.');
+  } else {
+    const errMsg = result && result.error ? result.error : 'Unknown error';
+    setStatus('teams-status','err','✗ Failed: ' + errMsg);
+  }
+}
+async function sendTeamsMessage(url, data) {
+  // Supports both new Workflows URLs (logic.azure.com) and old Connector URLs (office.com)
+  const isWorkflow = url.includes('logic.azure.com') || url.includes('powerautomate') || url.includes('azure.com');
+
+  try {
+    let body;
+    if (isWorkflow) {
+      // New Workflows format — Adaptive Card
+      body = {
+        "type": "message",
+        "attachments": [{
+          "contentType": "application/vnd.microsoft.card.adaptive",
+          "content": {
+            "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+            "type": "AdaptiveCard",
+            "version": "1.4",
+            "body": [
+              {
+                "type": "TextBlock",
+                "text": data.title || "🔴 IT Help Desk — Needs Attention",
+                "weight": "Bolder",
+                "size": "Medium",
+                "color": data.title && data.title.includes('Test') ? "Good" : "Attention"
+              },
+              {
+                "type": "FactSet",
+                "facts": [
+                  { "title": "👤 User",     "value": data.userName || 'Unknown' },
+                  { "title": "🌐 IP",       "value": data.ip || '—' },
+                  { "title": "❗ Issue",    "value": data.issue || 'Not specified' },
+                  { "title": "💬 Messages", "value": String(data.messages || 0) },
+                  { "title": "🕐 Time",    "value": data.time || '' },
+                  { "title": "#️⃣ Session", "value": '#' + (data.sessionId || '—') }
+                ]
+              }
+            ],
+            "actions": [{
+              "type": "Action.OpenUrl",
+              "title": "Open IT Knowledge Base",
+              "url": window.location.href
+            }]
+          }
+        }]
+      };
+    } else {
+      // Old Connector format — MessageCard
+      body = {
+        "@type": "MessageCard",
+        "@context": "http://schema.org/extensions",
+        "themeColor": "FF4444",
+        "summary": "IT Help Desk — Needs Attention",
+        "sections": [{
+          "activityTitle": data.title || "🔴 Session Needs Attention",
+          "activitySubtitle": "Session #" + data.sessionId + " · " + data.time,
+          "facts": [
+            { "name": "👤 User",     "value": data.userName || 'Unknown' },
+            { "name": "🌐 IP",       "value": data.ip || '—' },
+            { "name": "❗ Issue",    "value": data.issue || 'Not specified' },
+            { "name": "💬 Messages", "value": String(data.messages || 0) }
+          ]
+        }],
+        "potentialAction": [{
+          "@type": "OpenUri",
+          "name": "Open IT Knowledge Base",
+          "targets": [{ "os": "default", "uri": window.location.href }]
+        }]
+      };
+    }
+
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    // For new workflow URLs, a 202 or 200 means success
+    if (resp.ok || resp.status === 202) return { ok: true };
+    const text = await resp.text();
+    return { ok: false, error: `HTTP ${resp.status}: ${text.substring(0,200)}` };
+  } catch(e) {
+    return { ok: false, error: e.message };
+  }
+}
+async function sendTeamsAlert(session) {
+  const url = localStorage.getItem('it_kb_teams_webhook');
+  if (!url) return;
+  const result = await sendTeamsMessage(url, {
+    title: '🔴 IT Help Desk — User Needs Attention',
+    userName: session.userName || 'Unknown', ip: session.userIP || '—',
+    issue: session.issue || 'Not specified',
+    sessionId: session.id.slice(-6).toUpperCase(),
+    time: new Date(session.startTime).toLocaleString(),
+    messages: session.history ? session.history.length : 0
+  });
+  if (result && !result.ok) console.warn('Teams alert failed:', result.error);
+}
+function saveAppPassword() {
+  const val = document.getElementById('app-pass-input').value.trim();
+  if (!val) { setStatus('apppass-status','err','Enter a new password.'); return; }
+  localStorage.setItem('it_kb_gate_pass', val);
+  document.getElementById('app-pass-input').value = '';
+  setStatus('apppass-status','ok','✓ Password updated.');
+}
+function setStatus(elId, type, msg) {
+  const el = document.getElementById(elId);
+  if (!el) return;
+  el.textContent = msg; el.className = 'st-status ' + type;
+}
+document.getElementById('settings-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('settings-modal')) closeSettings();
+});
+
 </script>
+
+<!-- ── SETTINGS MODAL ── -->
+<div id="settings-modal">
+  <div class="st-box">
+    <button class="modal-close" onclick="closeSettings()">✕</button>
+    <div class="st-title">⚙️ Integrations &amp; Settings</div>
+    <div class="st-sub">Configure API keys and webhooks. All data is saved locally in your browser.</div>
+
+    <!-- ANTHROPIC API -->
+    <div class="st-section">
+      <div class="st-section-title">
+        🤖 Anthropic API Key
+        <span class="st-badge not-set" id="anthropic-badge">Not Set</span>
+      </div>
+      <div class="st-section-desc">
+        Enables AI-powered responses in the End User chat on any hosting (GitHub Pages, etc).<br>
+        Get your key at <strong>console.anthropic.com</strong> → API Keys.
+      </div>
+      <div class="st-input-wrap">
+        <input class="st-input" type="password" id="anthropic-key-input" placeholder="sk-ant-api03-...">
+        <button class="st-save-btn" onclick="saveAnthropicKey()">Save</button>
+      </div>
+      <div class="st-input-wrap" style="margin-top:8px;">
+        <button class="test-btn" onclick="testAnthropicKey()">🧪 Test Connection</button>
+        <button class="st-clear-btn" onclick="clearAnthropicKey()">Clear</button>
+      </div>
+      <div class="st-status" id="anthropic-status"></div>
+    </div>
+
+    <hr class="st-divider">
+
+    <!-- TEAMS WEBHOOK -->
+    <div class="st-section">
+      <div class="st-section-title">
+        💬 Microsoft Teams Webhook
+        <span class="st-badge not-set" id="teams-badge">Not Set</span>
+      </div>
+      <div class="st-section-desc">
+        Sends an alert to a Teams channel whenever a session is marked <strong style="color:var(--red)">Needs Attention</strong>.<br>
+        In Teams: channel → ··· → Connectors → Incoming Webhook → copy the URL.
+      </div>
+      <div class="st-input-wrap">
+        <input class="st-input" type="password" id="teams-webhook-input" placeholder="https://outlook.office.com/webhook/...">
+        <button class="st-save-btn" onclick="saveTeamsWebhook()">Save</button>
+      </div>
+      <div class="st-input-wrap" style="margin-top:8px;">
+        <button class="test-btn" onclick="testTeamsWebhook()">🧪 Send Test Message</button>
+        <button class="st-clear-btn" onclick="clearTeamsWebhook()">Clear</button>
+      </div>
+      <div class="st-status" id="teams-status"></div>
+    </div>
+
+    <hr class="st-divider">
+
+    <!-- ACCESS PASSWORD -->
+    <div class="st-section">
+      <div class="st-section-title">🔑 App Access Password</div>
+      <div class="st-section-desc">Change the password users need to enter to access the app.</div>
+      <div class="st-input-wrap">
+        <input class="st-input" type="password" id="app-pass-input" placeholder="New password...">
+        <button class="st-save-btn" onclick="saveAppPassword()">Update</button>
+      </div>
+      <div class="st-status" id="apppass-status"></div>
+    </div>
+  </div>
+</div>
+
 
 
 </body></html>
