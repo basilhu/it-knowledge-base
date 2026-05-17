@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IT Knowledge Base</title>
+<style>
+  :root {
+    --bg: #070b14;
+    --bg2: #0c1220;
+    --bg3: #111827;
+    --green: #00ff41;
+    --green2: #00c832;
+    --blue: #00b4ff;
+    --amber: #ffb300;
+    --red: #ff4444;
+    --text: #e2e8f0;
+    --text2: #7a8a9a;
+    --border: rgba(0,255,65,0.15);
+    --border2: rgba(255,255,255,0.08);
+    --mono: 'Courier New', monospace;
+    --sans: 'Segoe UI', system-ui, sans-serif;
+    --glow: 0 0 10px rgba(0,255,65,0.4);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── SCANLINES OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(0deg, rgba(0,255,65,0.02) 0px, rgba(0,255,65,0.02) 1px, transparent 1px, transparent 3px);
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ─────────────────────────────────────────────
+     ROLE PICKER
+  ───────────────────────────────────────────── */
+  #role-picker {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000;
+    flex-direction: column;
+    gap: 40px;
+    padding: 24px;
+  }
+
+  .rp-header { text-align: center; }
+
+  .rp-logo {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--green);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    opacity: 0.7;
+  }
+
+  .rp-title {
+    font-family: var(--mono);
+    font-size: clamp(28px, 6vw, 48px);
+    font-weight: 700;
+    color: var(--green);
+    text-shadow: 0 0 20px rgba(0,255,65,0.5), 0 0 40px rgba(0,255,65,0.2);
+    letter-spacing: 0.05em;
+    animation: flicker 8s infinite;
+  }
+
+  @keyframes flicker {
+    0%,95%,100% { opacity:1; }
+    96% { opacity:0.8; }
+    97% { opacity:1; }
+    98% { opacity:0.6; }
+    99% { opacity:1; }
+  }
+
+  .rp-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--text2);
+    letter-spacing: 0.25em;
+    margin-top: 8px;
+  }
+
+  .rp-cards {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+    max-width: 700px;
+  }
+
+  .rp-card {
+    flex: 1;
+    min-width: 240px;
+    max-width: 320px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 32px 24px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rp-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--green), transparent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .rp-card:hover { border-color: var(--green); transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,255,65,0.15); }
+  .rp-card:hover::before { opacity: 1; }
+
+  .rp-card-icon { font-size: 36px; display: block; margin-bottom: 16px; }
+  .rp-card-tag { font-family: var(--mono); font-size: 9px; color: var(--green); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 10px; opacity: 0.7; }
+  .rp-card-title { font-size: 20px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+  .rp-card-desc { font-size: 13px; color: var(--text2); line-height: 1.5; }
+
+  .rp-session {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text2);
+    opacity: 0.4;
+    letter-spacing: 0.15em;
+  }
+
+  /* ─────────────────────────────────────────────
+     END USER CHAT VIEW
+  ───────────────────────────────────────────── */
+  #enduser-view {
+    display: none;
+    position: fixed; inset: 0;
+    flex-direction: column;
+    background: var(--bg);
+    z-index: 900;
+  }
+  #enduser-view.active { display: flex; }
+
+  .eu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .eu-logo {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    text-shadow: var(--glow);
+  }
+
+  .eu-btn {
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 6px 14px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .eu-btn:hover { border-color: var(--green); color: var(--green); }
+
+  .eu-chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 760px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .msg {
+    display: flex;
+    gap: 12px;
+    animation: msgIn 0.3s ease;
+  }
+  @keyframes msgIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+  .msg.user { flex-direction: row-reverse; }
+
+  .msg-avatar {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .msg.ai .msg-avatar { background: rgba(0,255,65,0.1); border: 1px solid var(--border); }
+  .msg.user .msg-avatar { background: rgba(0,180,255,0.1); border: 1px solid rgba(0,180,255,0.2); }
+
+  .msg-bubble {
+    max-width: 80%;
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .msg.ai .msg-bubble {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-top-left-radius: 2px;
+  }
+
+  .msg.user .msg-bubble {
+    background: rgba(0,180,255,0.1);
+    border: 1px solid rgba(0,180,255,0.2);
+    color: var(--text);
+    border-top-right-radius: 2px;
+  }
+
+  .msg-bubble strong { color: var(--green); }
+
+  .typing-dots span {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    margin: 0 2px;
+    animation: bounce 1.2s infinite;
+    opacity: 0.6;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+  .quick-btns {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin-top: 12px;
+  }
+
+  .quick-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 6px 12px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.05em;
+  }
+  .quick-btn:hover { background: rgba(0,255,65,0.08); border-color: var(--green); }
+
+  .eu-input-area {
+    padding: 16px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .eu-input-wrap {
+    display: flex;
+    gap: 10px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  #eu-input {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  #eu-input:focus { border-color: var(--green); }
+  #eu-input::placeholder { color: var(--text2); }
+
+  #eu-send {
+    background: var(--green);
+    border: none;
+    color: #000;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  #eu-send:hover { background: var(--green2); }
+
+  /* ─────────────────────────────────────────────
+     IT VIEW
+  ───────────────────────────────────────────── */
+  #it-view {
+    display: none;
+    position: fixed; inset: 0;
+    flex-direction: column;
+    background: var(--bg);
+    z-index: 900;
+  }
+  #it-view.active { display: flex; }
+
+  .it-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 20px;
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    flex-wrap: wrap;
+  }
+
+  .it-logo {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    text-shadow: var(--glow);
+    white-space: nowrap;
+    margin-right: auto;
+  }
+
+  .it-status {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--green);
+    letter-spacing: 0.15em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .it-status::before { content: '●'; animation: blink 2s infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  .it-main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+  }
+
+  /* Sidebar */
+  .it-sidebar {
+    width: 220px;
+    background: var(--bg2);
+    border-right: 1px solid var(--border);
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .sidebar-section {
+    padding: 16px 12px 8px;
+  }
+
+  .sidebar-label {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--text2);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    padding: 0 4px;
+    margin-bottom: 8px;
+  }
+
+  .cat-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: var(--text2);
+    font-size: 13px;
+    padding: 7px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.15s;
+  }
+  .cat-btn:hover, .cat-btn.active { background: rgba(0,255,65,0.08); color: var(--green); }
+  .cat-btn .count { margin-left: auto; font-size: 11px; opacity: 0.5; font-family: var(--mono); }
+
+  /* Content area */
+  .it-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .it-search-bar {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border2);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  #it-search {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 6px;
+    outline: none;
+  }
+  #it-search:focus { border-color: var(--green); }
+  #it-search::placeholder { color: var(--text2); }
+
+  .ai-search-btn {
+    background: rgba(0,255,65,0.08);
+    border: 1px solid var(--border);
+    color: var(--green);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    white-space: nowrap;
+    letter-spacing: 0.1em;
+    transition: all 0.15s;
+  }
+  .ai-search-btn:hover { background: rgba(0,255,65,0.15); }
+
+  .it-entries {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 12px;
+    align-content: start;
+  }
+
+  .entry-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    position: relative;
+  }
+  .entry-card:hover { border-color: var(--green); transform: translateY(-1px); }
+
+  .entry-cat {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--green);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: 0.8;
+  }
+
+  .entry-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .entry-snippet {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .entry-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+
+  .entry-date { font-family: var(--mono); font-size: 10px; color: var(--text2); opacity: 0.6; }
+  .entry-tag {
+    font-family: var(--mono);
+    font-size: 9px;
+    color: var(--blue);
+    background: rgba(0,180,255,0.08);
+    border: 1px solid rgba(0,180,255,0.2);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  /* Modal */
+  #modal {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 9000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  #modal.active { display: flex; }
+
+  .modal-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 28px;
+    position: relative;
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: transparent;
+    border: 1px solid var(--border2);
+    color: var(--text2);
+    font-size: 18px;
+    width: 30px; height: 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { border-color: var(--red); color: var(--red); }
+
+  .modal-cat { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 10px; }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 16px; }
+  .modal-section-label { font-family: var(--mono); font-size: 10px; color: var(--text2); letter-spacing: 0.2em; text-transform: uppercase; margin: 16px 0 8px; }
+  .modal-text { font-size: 13px; color: var(--text2); line-height: 1.7; }
+  .modal-resolution {
+    background: rgba(0,255,65,0.04);
+    border: 1px solid rgba(0,255,65,0.15);
+    border-radius: 6px;
+    padding: 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+
+  /* AI Response panel */
+  #ai-panel {
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+    padding: 20px;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none;
+  }
+  #ai-panel.active { display: block; }
+
+  .ai-label { font-family: var(--mono); font-size: 10px; color: var(--green); letter-spacing: 0.25em; margin-bottom: 12px; }
+  .ai-response { font-size: 13px; color: var(--text); line-height: 1.7; }
+
+  /* Scrollbars */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  /* Responsive */
+  @media (max-width: 640px) {
+    .it-sidebar { display: none; }
+    .rp-cards { flex-direction: column; align-items: center; }
+    .rp-card { min-width: 100%; }
+  }
+
+  /* ── ADMIN PANEL ── */
+  #admin-view {
+    display: none; position: fixed; inset: 0;
+    flex-direction: column; background: var(--bg); z-index: 950;
+  }
+  #admin-view.active { display: flex; }
+  .admin-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 14px 20px; background: #080410;
+    border-bottom: 1px solid rgba(180,0,255,0.25); flex-shrink: 0;
+  }
+  .admin-logo { font-family: var(--mono); font-size: 13px; color: #c084fc;
+    letter-spacing: 0.2em; text-shadow: 0 0 10px rgba(192,132,252,0.5); margin-right: auto; }
+  .admin-badge { font-family: var(--mono); font-size: 9px; color: #c084fc;
+    background: rgba(192,132,252,0.1); border: 1px solid rgba(192,132,252,0.3);
+    padding: 3px 10px; border-radius: 3px; letter-spacing: 0.2em; text-transform: uppercase; }
+  .admin-stats { display: flex; gap: 12px; padding: 14px 20px; background: #080410;
+    border-bottom: 1px solid rgba(180,0,255,0.12); flex-shrink: 0; flex-wrap: wrap; }
+  .stat-box { background: rgba(192,132,252,0.05); border: 1px solid rgba(192,132,252,0.2);
+    border-radius: 6px; padding: 10px 18px; text-align: center; min-width: 100px; }
+  .stat-num { font-family: var(--mono); font-size: 22px; font-weight: 700; color: #c084fc; }
+  .stat-label { font-family: var(--mono); font-size: 9px; color: var(--text2);
+    letter-spacing: 0.2em; text-transform: uppercase; margin-top: 3px; }
+  .stat-box.green .stat-num { color: var(--green); }
+  .stat-box.red .stat-num { color: var(--red); }
+  .stat-box.amber .stat-num { color: var(--amber); }
+  .admin-filters { display: flex; gap: 8px; padding: 10px 20px;
+    border-bottom: 1px solid var(--border2); flex-shrink: 0; flex-wrap: wrap; }
+  .af-btn { background: transparent; border: 1px solid var(--border2); color: var(--text2);
+    font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    padding: 5px 14px; border-radius: 3px; cursor: pointer; transition: all 0.15s; }
+  .af-btn:hover, .af-btn.active { border-color: #c084fc; color: #c084fc; background: rgba(192,132,252,0.08); }
+  .af-btn.green.active { border-color: var(--green); color: var(--green); background: rgba(0,255,65,0.06); }
+  .af-btn.red.active { border-color: var(--red); color: var(--red); background: rgba(255,68,68,0.06); }
+  .af-btn.amber.active { border-color: var(--amber); color: var(--amber); background: rgba(255,179,0,0.06); }
+  .admin-list { flex: 1; overflow-y: auto; padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .session-card { background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 6px; padding: 14px 16px; cursor: pointer; transition: all 0.15s; border-left: 3px solid transparent; }
+  .session-card:hover { background: var(--bg3); }
+  .session-card.status-solved { border-left-color: var(--green); }
+  .session-card.status-attention { border-left-color: var(--red); }
+  .session-card.status-ongoing { border-left-color: var(--amber); }
+  .sc-top { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; flex-wrap: wrap; }
+  .sc-status { font-family: var(--mono); font-size: 9px; letter-spacing: 0.15em;
+    text-transform: uppercase; padding: 2px 8px; border-radius: 3px; }
+  .sc-status.solved { background: rgba(0,255,65,0.08); color: var(--green); border: 1px solid rgba(0,255,65,0.2); }
+  .sc-status.attention { background: rgba(255,68,68,0.08); color: var(--red); border: 1px solid rgba(255,68,68,0.2); }
+  .sc-status.ongoing { background: rgba(255,179,0,0.08); color: var(--amber); border: 1px solid rgba(255,179,0,0.2); }
+  .sc-id { font-family: var(--mono); font-size: 10px; color: var(--text2); }
+  .sc-time { font-family: var(--mono); font-size: 10px; color: var(--text2); margin-left: auto; }
+  .sc-issue { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+  .sc-summary { font-size: 12px; color: var(--text2); line-height: 1.5;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .sc-msgs { font-family: var(--mono); font-size: 10px; color: var(--text2); margin-top: 7px; opacity: 0.5; }
+  .empty-admin { text-align: center; padding: 80px 20px; color: var(--text2);
+    font-family: var(--mono); font-size: 13px; opacity: 0.5; }
+  #session-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.88);
+    z-index: 9500; align-items: center; justify-content: center; padding: 20px; }
+  #session-modal.active { display: flex; }
+  .sm-box { background: var(--bg2); border: 1px solid rgba(192,132,252,0.3);
+    border-radius: 8px; width: 100%; max-width: 680px; max-height: 85vh;
+    overflow-y: auto; display: flex; flex-direction: column; }
+  .sm-header { display: flex; align-items: center; gap: 12px; padding: 18px 22px;
+    border-bottom: 1px solid var(--border2); position: sticky; top: 0; background: var(--bg2); z-index: 1; }
+  .sm-title { font-size: 15px; font-weight: 700; color: var(--text); flex: 1; }
+  .sm-close { background: transparent; border: 1px solid var(--border2); color: var(--text2);
+    font-size: 16px; width: 28px; height: 28px; border-radius: 4px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .sm-close:hover { border-color: var(--red); color: var(--red); }
+  .sm-meta { display: flex; gap: 12px; padding: 12px 22px; border-bottom: 1px solid var(--border2); flex-wrap: wrap; }
+  .sm-meta-item { font-family: var(--mono); font-size: 10px; color: var(--text2); }
+  .sm-meta-item span { color: var(--text); }
+  .sm-convo { padding: 18px 22px; display: flex; flex-direction: column; gap: 10px; }
+  .sm-msg { padding: 10px 14px; border-radius: 6px; font-size: 13px; line-height: 1.5; max-width: 85%; }
+  .sm-msg.user { background: rgba(0,180,255,0.07); border: 1px solid rgba(0,180,255,0.15);
+    color: var(--text); align-self: flex-end; }
+  .sm-msg.ai { background: rgba(192,132,252,0.05); border: 1px solid rgba(192,132,252,0.15);
+    color: var(--text); align-self: flex-start; }
+  .sm-msg-label { font-family: var(--mono); font-size: 9px; color: var(--text2);
+    letter-spacing: 0.15em; margin-bottom: 3px; text-transform: uppercase; }
+  .sm-actions { padding: 14px 22px; border-top: 1px solid var(--border2); display: flex; gap: 10px; flex-wrap: wrap; }
+  .sm-btn { font-family: var(--mono); font-size: 10px; letter-spacing: 0.1em;
+    padding: 7px 16px; border-radius: 3px; cursor: pointer; border: 1px solid;
+    transition: all 0.15s; background: transparent; }
+  .sm-btn.solved { border-color: var(--green); color: var(--green); }
+  .sm-btn.solved:hover { background: rgba(0,255,65,0.08); }
+  .sm-btn.attn { border-color: var(--red); color: var(--red); }
+  .sm-btn.attn:hover { background: rgba(255,68,68,0.08); }
+  .sm-btn.del { border-color: var(--border2); color: var(--text2); }
+  .sm-btn.del:hover { border-color: var(--red); color: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ── ROLE PICKER ───────────────── -->
+<div id="role-picker">
+  <div class="rp-header">
+    <div class="rp-logo">// system access portal</div>
+    <div class="rp-title" id="rp-title-secret" onclick="handleSecretClick()" title="">IT Knowledge Base</div>
+    <div class="rp-sub">select your access level to continue</div>
+  </div>
+
+  <div class="rp-cards">
+    <div class="rp-card" onclick="selectRole('enduser')">
+      <span class="rp-card-icon">👤</span>
+      <div class="rp-card-tag">[ access_level: user ]</div>
+      <div class="rp-card-title">End User</div>
+      <div class="rp-card-desc">Describe your problem and get clear, step-by-step help. No tech jargon.</div>
+    </div>
+    <div class="rp-card" onclick="selectRole('it')">
+      <span class="rp-card-icon">🛠</span>
+      <div class="rp-card-tag">[ access_level: technician ]</div>
+      <div class="rp-card-title">IT Support</div>
+      <div class="rp-card-desc">Full knowledge base with all cases, scripts, AI search, and diagnostic tools.</div>
+    </div>
+  </div>
+
+  <div class="rp-session" id="session-id"></div>
+</div>
+
+<!-- ── END USER VIEW ─────────────── -->
+<div id="enduser-view">
+  <div class="eu-header">
+    <div class="eu-logo">◆ IT HELP DESK</div>
+    <div style="display:flex;gap:8px;">
+      <button class="eu-btn" onclick="resetChat()">↺ New</button>
+      <button class="eu-btn" onclick="backToRolePicker()">← Switch Role</button>
+    </div>
+  </div>
+
+  <div class="eu-chat" id="eu-chat"></div>
+
+  <div class="eu-input-area">
+    <div class="eu-input-wrap">
+      <input type="text" id="eu-input" placeholder="Type your answer or question..." autocomplete="off">
+      <button id="eu-send" onclick="sendUserMessage()">SEND →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── IT VIEW ───────────────────── -->
+<div id="it-view">
+  <div class="it-header">
+    <div class="it-logo">// IT_KNOWLEDGE_BASE</div>
+    <div class="it-status">ONLINE</div>
+    <button class="eu-btn" onclick="backToRolePicker()" style="margin-left:8px;">← Exit</button>
+  </div>
+
+  <div class="it-main">
+    <div class="it-sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Categories</div>
+        <button class="cat-btn active" onclick="filterCat('all', this)">
+          📁 All Cases <span class="count">706</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('mac', this)">
+          🍎 Mac / macOS <span class="count">149</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('windows', this)">
+          🪟 Windows <span class="count">104</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('network', this)">
+          🌐 Networking <span class="count">44</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('email', this)">
+          📧 Email / Outlook <span class="count">18</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('m365', this)">
+          ☁️ M365 / Office <span class="count">7</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('printers', this)">
+          🖨 Printers <span class="count">7</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('mobile', this)">
+          📱 Mobile <span class="count">6</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('security', this)">
+          🔒 Security <span class="count">3</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('scripting', this)">
+          💻 Scripting <span class="count">5</span>
+        </button>
+        <button class="cat-btn" onclick="filterCat('hardware', this)">
+          🖥 Hardware <span class="count">4</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="it-content">
+      <div class="it-search-bar">
+        <input type="text" id="it-search" placeholder="🔍  Search cases, tags, keywords..." oninput="searchIT(this.value)">
+        <button class="ai-search-btn" onclick="triggerAISearch()">✨ Ask AI</button>
+      </div>
+
+      <div class="it-entries" id="it-entries"></div>
+
+      <div id="ai-panel">
+        <div class="ai-label">✨ AI RESPONSE</div>
+        <div class="ai-response" id="ai-response-text">Loading...</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── MODAL ─────────────────────── -->
+<div id="modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-cat" id="modal-cat"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-section-label">Issue Description</div>
+    <div class="modal-text" id="modal-question"></div>
+    <div class="modal-section-label">Resolution / Fix</div>
+    <div class="modal-resolution" id="modal-resolution"></div>
+    <div class="modal-section-label">Tags</div>
+    <div class="entry-meta" id="modal-tags"></div>
+  </div>
+</div>
+
+<script>
+// ── SAMPLE KB DATA ──────────────────────────────────────────────
+const KB = [
+  { id:1, cat:'mac', title:'MacBook Pro password reset - Intel', date:'2025-11-12', tags:['#password','#recovery','#macOS'], question:'User forgot their MacBook Pro password and cannot log in. How to reset it?', resolution:'Boot into Recovery Mode (hold Cmd+R on startup) → Utilities → Terminal → type resetpassword → select user account → set new password → restart. Alternative: use Apple ID prompt after 3 failed attempts at login screen.' },
+  { id:2, cat:'mac', title:'M1 MBP 16" MDM recovery - MobileIron', date:'2025-10-28', tags:['#mdm','#mobileiron','#apple-silicon'], question:'MacBook Pro 16" M1 locked by MDM after employee departure. Need to reset and re-enroll.', resolution:'Recovery mode on Apple Silicon = hold Power button → Options. Recovery Lock password from MobileIron console. Remote MDM wipe is the easiest path. If no other Mac available, use Apple Configurator 2 in DFU mode or contact iDigital AASP.' },
+  { id:3, cat:'windows', title:'BSOD on Windows 11 - DRIVER_IRQL', date:'2025-09-14', tags:['#bsod','#windows11','#drivers'], question:'User getting repeated BSOD with DRIVER_IRQL_NOT_LESS_OR_EQUAL. Started after Windows Update.', resolution:'Boot to Safe Mode → Device Manager → roll back recently updated drivers, especially network and display. Check Event Viewer for crash dump. Run sfc /scannow and DISM /Online /Cleanup-Image /RestoreHealth in elevated CMD.' },
+  { id:4, cat:'network', title:'FortiClient VPN not connecting - certificate error', date:'2025-08-03', tags:['#vpn','#forticlient','#certificate'], question:'Remote user cannot connect to VPN, getting certificate verification error. Worked before.', resolution:'Check if the VPN gateway cert is expired. On client: remove saved connection → re-add with correct gateway IP. Try disabling "verify server certificate" for test. On FortiGate: renew self-signed cert or push updated trusted CA to endpoint via GPO.' },
+  { id:5, cat:'email', title:'Outlook stuck on "Loading Profile" loop', date:'2025-07-22', tags:['#outlook','#exchange','#profile'], question:'User Outlook hangs on Loading Profile on startup, never opens inbox.', resolution:'Close Outlook → Control Panel → Mail → Show Profiles → remove the profile → rebuild. If that fails: outlook.exe /resetnavpane, then /cleanprofile. Clear OST file from AppData\\Local\\Microsoft\\Outlook. Check if Exchange Autodiscover is responding.' },
+  { id:6, cat:'mac', title:'Monterey FileVault stuck on encryption', date:'2025-06-17', tags:['#filevault','#encryption','#monterey'], question:'FileVault showing 80% encrypted for 3 days, no progress. Laptop used normally.', resolution:'FileVault encryption pauses when Mac is heavily used or on battery. Connect to power, leave idle overnight. Check progress in Terminal: fdesetup status. If truly stuck: sudo fdesetup disable → re-enable. Last resort: backup + erase + reinstall.' },
+  { id:7, cat:'windows', title:'CrowdStrike Falcon blocking application', date:'2025-05-29', tags:['#crowdstrike','#security','#whitelist'], question:'Legitimate business app blocked by CrowdStrike Falcon on Windows 11 after update.', resolution:'Check Falcon console for detection event → get the SHA256 hash → add to IOA or IOC exclusion. Policy-based: add folder/hash exclusion in Prevention Policy. For urgent fix: temporarily set policy to "detect-only" → test app → set exclusion → re-enable prevention.' },
+  { id:8, cat:'printers', title:'Zebra ZT410 label printer offline after IP change', date:'2025-05-01', tags:['#zebra','#printer','#ip'], question:'Zebra label printer showing as offline after network reconfiguration changed its IP.', resolution:'Reconnect directly via USB → open Zebra Setup Utilities → Tools → Send File → send new IP config ZPL command: ^XA^ND192.168.1.100,255.255.255.0,192.168.1.1^XZ. Update printer port in Windows → Devices & Printers → Printer Properties → Ports.' },
+  { id:9, cat:'mobile', title:'iOS MDM profile not installing', date:'2025-04-10', tags:['#ios','#mdm','#mobileiron'], question:'Employee new iPhone cannot install MobileIron MDM profile. Company enrollment fails.', resolution:'Check MobileIron portal for user license. Ensure device is enrolled in Apple Business Manager if required. On device: Settings → General → VPN & Device Management → should show profile to install. If stuck: unenroll device from ABM → re-add → re-invite. Reset network settings on device as last resort.' },
+  { id:10, cat:'scripting', title:'PowerShell script to export AD users to CSV', date:'2025-03-20', tags:['#powershell','#activedirectory','#export'], question:'Need a script to export all Active Directory users with their last logon date and department.', resolution:'Get-ADUser -Filter * -Properties LastLogonDate,Department,Manager,EmailAddress | Select Name,SamAccountName,EmailAddress,Department,LastLogonDate | Export-Csv C:\\IT\\ADUsers.csv -NoTypeInformation. Run from a Domain Controller or machine with RSAT tools installed.' },
+  { id:11, cat:'network', title:'Cisco ISE guest portal not loading', date:'2025-02-14', tags:['#cisco','#ise','#guest'], question:'Guest wifi portal not redirecting correctly. Users connect to SSID but portal never appears.', resolution:'Check ISE policy node services are running. Verify redirect ACL on WLC/switch is pointing to correct PSN. Test portal URL directly: https://ise-ip:8443/portal. Check DNS resolution for portal FQDN from guest VLAN. Self-signed cert expiry common cause — renew in ISE → Administration → Certificates.' },
+  { id:12, cat:'m365', title:'OneDrive sync error 0x8004de40', date:'2025-01-30', tags:['#onedrive','#sync','#m365'], question:'Multiple users getting OneDrive sync error 0x8004de40, files not syncing.', resolution:'Error = OneDrive cannot connect to the internet or M365 service. Check: Azure AD conditional access policies blocking desktop client. Ensure Modern Authentication is enabled. Reset OneDrive: %localappdata%\\Microsoft\\OneDrive\\onedrive.exe /reset. Re-sign in. Check proxy/firewall is not blocking storage.live.com.' },
+];
+
+let currentCat = 'all';
+let currentSearch = '';
+let chatHistory = [];
+let conversationContext = {};
+
+// ── ROLE PICKER ─────────────────────────────────────────────────
+document.getElementById('session-id').textContent =
+  'session_id: ' + Math.random().toString(36).substr(2,9).toUpperCase();
+
+function selectRole(role) {
+  document.getElementById('role-picker').style.display = 'none';
+  if (role === 'enduser') {
+    document.getElementById('enduser-view').classList.add('active');
+    startEndUserChat();
+  } else {
+    document.getElementById('it-view').classList.add('active');
+    renderCards(KB);
+  }
+}
+
+function backToRolePicker() {
+  document.getElementById('enduser-view').classList.remove('active');
+  document.getElementById('it-view').classList.remove('active');
+  document.getElementById('role-picker').style.display = 'flex';
+  document.getElementById('session-id').textContent =
+    'session_id: ' + Math.random().toString(36).substr(2,9).toUpperCase();
+  chatHistory = [];
+  conversationContext = {};
+}
+
+// ── END USER CHAT ────────────────────────────────────────────────
+function startEndUserChat() {
+  const chat = document.getElementById('eu-chat');
+  chat.innerHTML = '';
+  chatHistory = [];
+  conversationContext = {};
+  createSession();
+  addAIMessage(`Hi! 👋 I'm your IT Help Desk assistant.
+
+<strong>To get started — what's the issue you're experiencing?</strong>
+
+You can describe it in your own words, or pick a common topic below.`, [
+    '🔑 Password / Login issue',
+    '📶 VPN / Remote work issue',
+    '📧 Outlook / Email problem',
+    '💻 Computer is slow or crashing',
+    '🖨 Printer not working',
+    '📱 Mobile device / phone issue',
+    '🌐 No internet / network issue',
+    '🔒 MFA / Two-factor auth',
+  ]);
+}
+
+function addAIMessage(text, quickReplies = []) {
+  const chat = document.getElementById('eu-chat');
+  const msg = document.createElement('div');
+  msg.className = 'msg ai';
+  msg.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="msg-bubble">
+      ${text.replace(/\n/g,'<br>')}
+      ${quickReplies.length ? `<div class="quick-btns">${quickReplies.map(q=>`<button class="quick-btn" onclick="sendQuickReply('${q.replace(/'/,"\\'")}')"> ${q}</button>`).join('')}</div>` : ''}
+    </div>`;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+  chatHistory.push({ role: 'assistant', content: text });
+}
+
+function addUserMessage(text) {
+  const chat = document.getElementById('eu-chat');
+  const msg = document.createElement('div');
+  msg.className = 'msg user';
+  msg.innerHTML = `<div class="msg-avatar">👤</div><div class="msg-bubble">${text}</div>`;
+  chat.appendChild(msg);
+  chat.scrollTop = chat.scrollHeight;
+  chatHistory.push({ role: 'user', content: text });
+  if (!activeSession) createSession();
+  updateActiveSession();
+}
+
+function addTyping() {
+  const chat = document.getElementById('eu-chat');
+  const t = document.createElement('div');
+  t.className = 'msg ai'; t.id = 'typing';
+  t.innerHTML = `<div class="msg-avatar">🤖</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  chat.appendChild(t);
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function sendQuickReply(text) {
+  document.getElementById('eu-input').value = text;
+  sendUserMessage();
+}
+
+function sendUserMessage() {
+  const inp = document.getElementById('eu-input');
+  const text = inp.value.trim();
+  if (!text) return;
+  inp.value = '';
+  addUserMessage(text);
+  addTyping();
+  setTimeout(() => callChatAPI(text), 600);
+}
+
+document.getElementById('eu-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') sendUserMessage();
+});
+
+// ── DECISION TREE (works offline, no API needed) ──────────────
+const TREE = {
+  'password': {
+    q: "Got it — password issue. Are you trying to log in to your **computer**, your **email (Outlook)**, or something else?",
+    opts: ['My computer (Windows/Mac login)', 'Outlook / Email', 'Company system / website', 'Something else'],
+    next: {
+      'my computer (windows/mac login)': {
+        q: "What happens when you try to log in?",
+        opts: ['I forgot my password', 'My account is locked', 'Password expired', 'I get an error message'],
+        next: {
+          'i forgot my password': { ans: "Here's how to reset your computer password:\n\n**Windows:** Press Ctrl+Alt+Delete at the lock screen → click 'I forgot my PIN' or ask IT to reset via helpdesk.\n\n**Mac:** At the login screen, click the question mark next to the password field → reset via Apple ID, or restart into Recovery Mode.\n\n💡 If neither works, please contact your IT helpdesk — they can reset it remotely." },
+          'my account is locked': { ans: "Your account is likely locked after too many wrong password attempts.\n\n✅ **Self-service:** Wait 15–30 minutes and try again — some systems auto-unlock.\n\n📞 **If still locked:** Contact your IT helpdesk and they'll unlock it in under 2 minutes. Have your employee ID ready." },
+          'password expired': { ans: "Your password has expired and needs to be changed.\n\n**Windows:** Press Ctrl+Alt+Delete → 'Change a password' → enter old password then new one (twice).\n\n**Mac:** System Settings → Users & Groups → Change Password.\n\n📌 New password must be at least 8 characters with letters and numbers." },
+          'i get an error message': { ans: "Please describe the exact error message to your IT helpdesk — they'll know exactly what it means.\n\n📞 Contact IT with: your username, which computer, and a photo of the error message if possible." }
+        }
+      },
+      'outlook / email': {
+        q: "What's happening with your email?",
+        opts: ['Forgotten password', 'Wrong password error', 'MFA / two-factor issue'],
+        next: {
+          'forgotten password': { ans: "To reset your email (Microsoft 365) password:\n\n1. Go to **portal.microsoft.com**\n2. Click 'Can't access your account?'\n3. Follow the self-service reset steps\n\nYou'll need access to your phone number or backup email. If you can't complete it, contact your IT helpdesk." },
+          'wrong password error': { ans: "If you're sure the password is correct but still getting an error:\n\n1. Try clearing your browser cache (Ctrl+Shift+Delete)\n2. Try a different browser or Incognito mode\n3. Make sure Caps Lock is off\n\nIf still failing, your account may be locked — contact IT helpdesk." },
+          'mfa / two-factor issue': { ans: "Having trouble with the verification code?\n\n1. Make sure your phone clock is set to automatic/correct time\n2. Try the **Microsoft Authenticator** app → tap Refresh\n3. If you lost your phone or changed numbers, contact IT helpdesk to reset your MFA\n\n📞 MFA resets must be done by IT — don't worry, it's quick!" }
+        }
+      }
+    }
+  },
+  'vpn': {
+    q: "VPN issue — are you able to connect at all, or does it connect but then something else doesn't work?",
+    opts: ["Can't connect at all", 'Connects but internet is slow', 'Connects but I can\'t reach internal systems', 'VPN keeps disconnecting'],
+    next: {
+      "can't connect at all": { ans: "Let's fix your VPN connection:\n\n1. **Check your internet** — open a website without VPN first\n2. **Restart the VPN app** (FortiClient/Cisco AnyConnect) — close it fully and reopen\n3. **Restart your computer** — this fixes most VPN issues\n4. Make sure your **MFA app** is working (VPN may require approval)\n\nIf still not connecting after these steps, contact your IT helpdesk — they may need to check your VPN profile." },
+      'connects but internet is slow': { ans: "Slow internet on VPN is common when working from home:\n\n1. **Test your home internet speed** at fast.com — should be at least 10Mbps\n2. **Disconnect VPN** and test speed again — if much faster, the VPN itself is the bottleneck\n3. Try connecting via **cable (ethernet)** instead of WiFi\n4. Close unused apps and browser tabs\n\n💡 For video calls (Teams/Zoom), you can sometimes disconnect VPN temporarily if not accessing internal systems." },
+      "connects but i can't reach internal systems": { ans: "Your VPN is connected but internal resources aren't accessible:\n\n1. Try accessing by **IP address** instead of server name\n2. **Disconnect and reconnect** the VPN\n3. Check if the issue is with one specific system or all internal sites\n\nIf only one system is affected, it may be a server issue — contact IT helpdesk with details of what you're trying to reach." },
+      'vpn keeps disconnecting': { ans: "VPN keeps dropping? Try these:\n\n1. **Check your home WiFi stability** — move closer to your router\n2. In VPN settings, look for **'Keep alive'** or **'Always-on VPN'** option\n3. Disable any **battery saver / power saving mode** — it can cut network connections\n4. Try a wired ethernet connection instead of WiFi\n\nIf it continues, contact IT — there may be a session timeout setting to adjust." }
+    }
+  },
+  'outlook': {
+    q: "Outlook issue — what exactly is happening?",
+    opts: ['Outlook won\'t open / crashes', 'Not receiving emails', 'Can\'t send emails', 'Slow or frozen'],
+    next: {
+      "outlook won't open / crashes": { ans: "Outlook not opening? Try these steps:\n\n1. **Wait 1 minute** and try again — sometimes it's just slow to load\n2. **Restart your computer** — this fixes most Outlook startup issues\n3. Right-click the Outlook icon → **Run as administrator**\n4. If it opens but hangs on 'Loading Profile' — contact IT helpdesk\n\n📞 If none of these work, IT can repair your Outlook profile in about 5 minutes." },
+      'not receiving emails': { ans: "Not getting emails?\n\n1. Check your **Junk/Spam folder** — emails sometimes end up there\n2. Check if you have any **email rules/filters** set up that might be moving emails\n3. Search for the sender's name directly in the search bar\n4. Ask the sender to try again\n\nIf you're missing emails for more than a few hours, contact IT — there may be a mail flow issue." },
+      "can't send emails": { ans: "Can't send emails:\n\n1. Check if you have an **internet connection**\n2. Look in your **Outbox** folder — the email may be stuck there\n3. Try sending to yourself first to test\n4. Check if the recipient's email address is spelled correctly\n\nIf emails are stuck in Outbox, try: Close Outlook → reopen → right-click the stuck email → 'Submit'. Contact IT if this continues." },
+      'slow or frozen': { ans: "Outlook running slowly:\n\n1. **Close and reopen** Outlook\n2. Check if your **mailbox is very full** — try archiving or deleting old emails\n3. Disable any Outlook add-ins: File → Options → Add-ins → Go → uncheck all → restart\n4. Make sure Windows is up to date\n\nIf still slow after restarting, contact IT — your mailbox may need maintenance." }
+    }
+  },
+  'slow': {
+    q: "Computer running slow. Is it slow all the time, or only when doing specific things?",
+    opts: ['Slow all the time since startup', 'Slow only when using specific apps', 'Suddenly got slow today', 'Slow and making fan noise'],
+    next: {
+      'slow all the time since startup': { ans: "Computer slow from the start:\n\n1. **Restart** if you haven't recently (not sleep — full restart)\n2. Check if **Windows Update** is running in the background (look for update icon in taskbar)\n3. Open **Task Manager** (Ctrl+Shift+Esc) → check if anything is using lots of CPU or Memory\n\n📸 Take a screenshot of Task Manager and send it to IT — they can spot the problem quickly." },
+      'slow only when using specific apps': { ans: "Slow only in certain apps:\n\n1. **Close other programs** you're not using\n2. **Restart the slow app** itself\n3. Check if the app needs to be **updated** — look in the app for 'Check for updates'\n\nIf it's a company app (SAP, Teams, etc.) contact IT — they may need to update or repair it." },
+      'suddenly got slow today': { ans: "Suddenly slow today — this is usually one of these:\n\n1. **Windows Update installing** in background — wait 30 min and restart\n2. **Antivirus scan running** — check system tray for scan icon\n3. **Disk backup running** — same, wait for it to finish\n\n🔄 A full restart usually resolves this. If still slow after restart, contact IT." },
+      'slow and making fan noise': { ans: "Fan noise + slow performance means your computer is overheating or working very hard:\n\n1. **Make sure vents aren't blocked** — don't use laptop on a pillow or bed\n2. **Restart** the computer\n3. Check Task Manager (Ctrl+Shift+Esc) for any process using 90%+ CPU\n\n⚠️ If the fan is very loud and the computer feels hot, contact IT — it may need cleaning or a hardware check." }
+    }
+  },
+  'printer': {
+    q: "Printer issue — which best describes the problem?",
+    opts: ['Printer shows as offline', 'Print job is stuck / nothing prints', 'Prints but quality is bad', 'Can\'t find the printer on my computer'],
+    next: {
+      'printer shows as offline': { ans: "Printer showing offline:\n\n1. **Check the printer is powered on** and has paper\n2. **Turn the printer off, wait 10 seconds, turn back on**\n3. On your computer: Settings → Printers → right-click your printer → **'See what's printing'** → Printer menu → uncheck 'Use Printer Offline'\n4. Try printing a test page\n\nIf still offline, the printer may have lost its network connection — contact IT to check." },
+      'print job is stuck / nothing prints': { ans: "Print job stuck in queue:\n\n1. Settings → Printers → click your printer → **Cancel all documents**\n2. If it won't cancel: open Services (search in Start) → find **Print Spooler** → right-click → Restart\n3. Try printing again\n\nStill stuck? Restart your computer — this clears the print queue completely." },
+      'prints but quality is bad': { ans: "Poor print quality:\n\n1. Check the **ink/toner levels** — usually shown on the printer's screen\n2. Run the printer's **cleaning cycle** (on the printer's menu or from your PC's printer settings)\n3. Make sure you're using the right paper type\n\nIf toner/ink is low, contact IT or your office manager to order replacements." },
+      "can't find the printer on my computer": { ans: "Can't see the printer:\n\n1. Make sure you're **connected to the office network** (not VPN-only from home)\n2. Settings → Bluetooth & devices → Printers → **Add a printer**\n3. If working from home, most office printers require VPN + IT setup\n\n📞 For adding new printers, IT helpdesk can connect remotely and install it for you in 5 minutes." }
+    }
+  },
+  'mobile': {
+    q: "Mobile device issue — what's the problem?",
+    opts: ['Can\'t access company email on phone', 'Company app not working', 'Lost phone / need to report it'],
+    next: {
+      "can't access company email on phone": { ans: "Can't get company email on your phone:\n\n1. Check your WiFi or mobile data is working\n2. Open the **Outlook app** (not the built-in mail app) — it works best with company email\n3. Try signing out of the app and signing back in\n\n📞 If your company uses a Mobile Device Management (MDM) system, IT may need to re-enroll your device. Contact helpdesk." },
+      'company app not working': { ans: "Company app not working on your phone:\n\n1. **Force close** the app and reopen\n2. **Update** the app from App Store / Google Play\n3. **Restart your phone**\n\nIf the problem continues, contact IT with the app name and what error you see." },
+      'lost phone / need to report it': { ans: "⚠️ Lost or stolen phone — act quickly:\n\n**Contact IT helpdesk immediately** so they can:\n- Lock or wipe the device remotely\n- Disconnect it from company email and apps\n- Prevent unauthorized access\n\n📞 Call IT helpdesk right now — don't wait. The sooner you report it, the safer your data." }
+    }
+  },
+  'network': {
+    q: "No internet or network issue — are you in the office or working from home?",
+    opts: ['In the office', 'Working from home'],
+    next: {
+      'in the office': {
+        q: "What exactly is happening?",
+        opts: ['No internet at all', 'Internet works but I can\'t reach some company systems', 'WiFi connected but very slow'],
+        next: {
+          'no internet at all': { ans: "No internet in the office:\n\n1. Check if **other people near you** have the same issue — if yes, it's a network outage, contact IT\n2. Try **unplugging and replugging your network cable** (if using one)\n3. For WiFi: disconnect from the network and reconnect\n4. Restart your computer\n\n📞 If others are affected too, call IT helpdesk immediately — it's likely a network outage." },
+          "internet works but i can't reach some company systems": { ans: "Internet works but internal systems don't:\n\nThis is unusual in the office. Please contact IT helpdesk with:\n- Which specific systems you can't reach\n- Any error messages you see\n- Whether it started suddenly or has always been this way" },
+          'wifi connected but very slow': { ans: "WiFi slow in the office:\n\n1. Try moving **closer to a WiFi access point**\n2. If you have a network cable nearby, **plug in directly** — much faster\n3. Check if others around you have the same problem\n\n📞 If the office WiFi is consistently slow, contact IT — they can check if the access point needs attention." }
+        }
+      },
+      'working from home': {
+        q: "What's happening with your home connection?",
+        opts: ['My home internet isn\'t working at all', 'Internet works but VPN doesn\'t', 'Internet is working but very slow'],
+        next: {
+          "my home internet isn't working at all": { ans: "Home internet not working:\n\n1. **Restart your router/modem** — unplug power for 30 seconds, plug back in, wait 2 minutes\n2. Check if other devices (phone) have internet\n3. If nothing works, contact your **internet provider** — this is outside IT's control\n\nFor urgent work matters, you can use your **phone as a hotspot** temporarily." },
+          "internet works but vpn doesn't": { ans: "Internet works but VPN won't connect:\n\n1. Restart the VPN app completely\n2. Restart your computer\n3. Make sure your MFA (authenticator app) is working\n4. Try connecting to your phone hotspot instead of home WiFi to rule out router issues\n\nIf still not working, contact IT helpdesk — they can check your VPN profile." },
+          'internet is working but very slow': { ans: "Slow home internet:\n\n1. Test your speed at **fast.com** — you need at least 10Mbps for normal work\n2. Move closer to your WiFi router\n3. Restart your router\n4. Close video streams, downloads, or other devices using bandwidth\n\nIf consistently slow, contact your internet provider. IT helpdesk can't fix home internet speeds." }
+        }
+      }
+    }
+  },
+  'mfa': {
+    q: "MFA / Two-factor auth issue. What's happening?",
+    opts: ["Not getting the verification code", "Lost my phone / can't access authenticator", "MFA prompt keeps appearing repeatedly", "Setting up MFA for first time"],
+    next: {
+      "not getting the verification code": { ans: "Not receiving the MFA code:\n\n1. **Check your phone signal** — SMS codes won't arrive without signal\n2. If using Authenticator app — make sure your **phone clock is correct** (Settings → Date & Time → Set automatically)\n3. Try requesting the code again\n4. In Microsoft Authenticator: pull down to **refresh**\n\nIf still not working, contact IT — they can reset your MFA method." },
+      "lost my phone / can't access authenticator": { ans: "⚠️ Lost phone or can't access MFA app — contact IT helpdesk directly.\n\nThey'll verify your identity and reset your MFA so you can log in again. This must be done by IT for security reasons.\n\n📞 Call or message IT helpdesk as soon as possible." },
+      "mfa prompt keeps appearing repeatedly": { ans: "MFA prompting too often:\n\n1. When approving, make sure to check **'Don't ask again for 14 days'** if that option appears\n2. Make sure you're using the **same browser** each time (not switching between browsers)\n3. Check if your browser cookies are being cleared on close\n\nIf MFA asks every single time, contact IT — there may be a policy setting to adjust." },
+      "setting up mfa for first time": { ans: "Setting up MFA for the first time:\n\n1. Download the **Microsoft Authenticator** app on your phone (App Store / Google Play)\n2. Go to **aka.ms/mfasetup** on your computer\n3. Choose 'Mobile app' → 'Receive notifications'\n4. Scan the QR code with the Authenticator app\n5. Approve the test notification\n\n📞 If you get stuck at any step, contact IT — they can guide you through it." }
+    }
+  }
+};
+
+// Map user input to tree key
+function matchTree(text) {
+  const t = text.toLowerCase();
+  if (t.includes('password') || t.includes('login') || t.includes('locked') || t.includes('forgot')) return 'password';
+  if (t.includes('vpn') || t.includes('remote') || t.includes('working from home')) return 'vpn';
+  if (t.includes('outlook') || t.includes('email') || t.includes('mail')) return 'outlook';
+  if (t.includes('slow') || t.includes('crash') || t.includes('freeze') || t.includes('hang')) return 'slow';
+  if (t.includes('print')) return 'printer';
+  if (t.includes('mobile') || t.includes('phone') || t.includes('iphone') || t.includes('android')) return 'mobile';
+  if (t.includes('internet') || t.includes('network') || t.includes('wifi') || t.includes('connection') || t.includes('no internet')) return 'network';
+  if (t.includes('mfa') || t.includes('two-factor') || t.includes('authenticator') || t.includes('verification')) return 'mfa';
+  return null;
+}
+
+let treeState = null; // current node in the tree
+
+function processWithTree(text) {
+  // If we have a current node with options, match the user's choice
+  if (treeState) {
+    const t = text.toLowerCase();
+    const keys = Object.keys(treeState.next || {});
+    const match = keys.find(k => t.includes(k.toLowerCase().substring(0,12)) || k.toLowerCase().includes(t.substring(0,15)));
+    if (match) {
+      const node = treeState.next[match];
+      if (node.ans) {
+        treeState = null;
+        return { type:'answer', text: node.ans };
+      } else if (node.q) {
+        treeState = node;
+        return { type:'question', text: node.q, opts: node.opts || [] };
+      }
+    }
+  }
+
+  // Try to match from root
+  const key = matchTree(text);
+  if (key && TREE[key]) {
+    const node = TREE[key];
+    treeState = node;
+    return { type:'question', text: node.q, opts: node.opts || [] };
+  }
+
+  return null; // No tree match
+}
+
+async function callChatAPI(userMsg) {
+  // Try decision tree first
+  const treeResult = processWithTree(userMsg);
+  if (treeResult) {
+    removeTyping();
+    if (treeResult.type === 'answer') {
+      addAIMessage(treeResult.text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>'), [
+        '✅ This solved my issue',
+        '❌ Still not working — need more help',
+        '🔄 Start over'
+      ]);
+    } else {
+      addAIMessage(treeResult.text, treeResult.opts);
+    }
+    return;
+  }
+
+  // Handle final resolution buttons
+  const tl = userMsg.toLowerCase();
+  if (tl.includes('solved') || tl.includes('this solved')) {
+    updateActiveSession('solved');
+    removeTyping();
+    treeState = null;
+    addAIMessage("Great! Glad that worked! 🎉 Is there anything else I can help you with?", [
+      '🔑 Password / Login issue', '📶 VPN issue', '📧 Email problem', '💻 Computer is slow'
+    ]);
+    return;
+  }
+  if (tl.includes('start over') || tl.includes('new')) {
+    removeTyping(); treeState = null; resetChat(); return;
+  }
+  if (tl.includes('still not working') || tl.includes('need more help') || tl.includes('not working')) {
+    updateActiveSession('attention');
+    removeTyping();
+    treeState = null;
+    addAIMessage("No worries! This issue needs hands-on help from the IT team.\n\n📞 <strong>Please contact your IT Helpdesk</strong> and let them know what you already tried — that will speed things up!\n\nWant to try something else while you wait?", [
+      '🔑 Different issue', '🔄 Start over'
+    ]);
+    return;
+  }
+
+  // Try AI as fallback
+  const kbContext = KB.map(e => `[${e.cat}] ${e.title}: ${e.resolution}`).join('\n');
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `You are a friendly IT Help Desk assistant helping non-technical users. Ask ONE clarifying question to narrow down the issue. Keep responses under 120 words. No server names, IPs, or PowerShell commands. Simple language only. If needs IT intervention say "Please contact your IT helpdesk."\n\nKB:\n${kbContext}`,
+        messages: chatHistory.slice(-6).map(m => ({ role: m.role, content: m.content }))
+      })
+    });
+    const data = await resp.json();
+    removeTyping();
+    const reply = data.content?.[0]?.text || '';
+    if (reply) { addAIMessage(reply); return; }
+  } catch(e) { /* AI unavailable, use fallback */ }
+
+  // Generic fallback if nothing matched
+  removeTyping();
+  treeState = null;
+  addAIMessage("I'm not sure I understood that. What kind of issue are you having? Pick one below or describe it differently:", [
+    '🔑 Password / Login', '📶 VPN / Remote work', '📧 Outlook / Email',
+    '💻 Slow computer', '🖨 Printer', '🌐 Internet / Network', '🔒 MFA issue'
+  ]);
+}
+
+function resetChat() {
+  startEndUserChat();
+}
+
+// ── IT VIEW ──────────────────────────────────────────────────────
+function renderCards(data) {
+  const container = document.getElementById('it-entries');
+  if (!data.length) {
+    container.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--text2);font-family:var(--mono);font-size:13px;">// no results found</div>`;
+    return;
+  }
+  container.innerHTML = data.map(e => `
+    <div class="entry-card" onclick="openModal(${e.id})">
+      <div class="entry-cat">${e.cat.toUpperCase()}</div>
+      <div class="entry-title">${e.title}</div>
+      <div class="entry-snippet">${e.question}</div>
+      <div class="entry-meta">
+        <span class="entry-date">${e.date}</span>
+        ${e.tags.map(t=>`<span class="entry-tag">${t}</span>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  applyFilters();
+}
+
+function searchIT(val) {
+  currentSearch = val.toLowerCase();
+  applyFilters();
+}
+
+function applyFilters() {
+  let data = KB;
+  if (currentCat !== 'all') data = data.filter(e => e.cat === currentCat);
+  if (currentSearch) data = data.filter(e =>
+    e.title.toLowerCase().includes(currentSearch) ||
+    e.question.toLowerCase().includes(currentSearch) ||
+    e.resolution.toLowerCase().includes(currentSearch) ||
+    e.tags.some(t => t.includes(currentSearch))
+  );
+  renderCards(data);
+}
+
+function openModal(id) {
+  const e = KB.find(x => x.id === id);
+  if (!e) return;
+  document.getElementById('modal-cat').textContent = e.cat.toUpperCase();
+  document.getElementById('modal-title').textContent = e.title;
+  document.getElementById('modal-question').textContent = e.question;
+  document.getElementById('modal-resolution').textContent = e.resolution;
+  document.getElementById('modal-tags').innerHTML = e.tags.map(t=>`<span class="entry-tag">${t}</span>`).join('');
+  document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal')) closeModal();
+});
+
+async function triggerAISearch() {
+  const query = document.getElementById('it-search').value.trim();
+  if (!query) { alert('Type a search query first'); return; }
+  const panel = document.getElementById('ai-panel');
+  const respEl = document.getElementById('ai-response-text');
+  panel.classList.add('active');
+  respEl.textContent = 'Searching knowledge base...';
+
+  const context = KB.map(e => `[${e.cat}] ${e.title}: ${e.resolution}`).join('\n');
+  try {
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{ role:'user', content:`You are an IT support expert. Answer this query based on the KB:\n\nKB:\n${context}\n\nQuery: ${query}\n\nGive a technical answer with steps. Reference specific KB cases if relevant.` }]
+      })
+    });
+    const data = await resp.json();
+    respEl.textContent = data.content?.[0]?.text || 'No response.';
+  } catch(e) {
+    respEl.textContent = '⚠️ AI search unavailable. Use manual search above.';
+  }
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (document.getElementById('modal').classList.contains('active')) closeModal();
+    else backToRolePicker();
+  }
+});
+
+// Init
+renderCards(KB);
+</script>
+
+<!-- ── ADMIN VIEW ───────────────── -->
+<div id="admin-view">
+  <div class="admin-header">
+    <div class="admin-logo">◆ ADMIN // SESSION MONITOR</div>
+    <div class="admin-badge">🔒 restricted</div>
+    <button class="eu-btn" onclick="backToRolePicker()" style="margin-left:8px;">← Exit</button>
+  </div>
+
+  <div class="admin-stats" id="admin-stats"></div>
+
+  <div class="admin-filters">
+    <button class="af-btn active" onclick="filterSessions('all',this)">All</button>
+    <button class="af-btn red" onclick="filterSessions('attention',this)">🔴 Needs Attention</button>
+    <button class="af-btn amber" onclick="filterSessions('ongoing',this)">🟡 Ongoing</button>
+    <button class="af-btn green" onclick="filterSessions('solved',this)">🟢 Solved</button>
+    <button class="af-btn" onclick="clearAllSessions()" style="margin-left:auto;color:var(--red);border-color:rgba(255,68,68,0.3);">🗑 Clear All</button>
+  </div>
+
+  <div class="admin-list" id="admin-list"></div>
+</div>
+
+<!-- ── SESSION DETAIL MODAL ─────── -->
+<div id="session-modal">
+  <div class="sm-box">
+    <div class="sm-header">
+      <div class="sm-title" id="sm-title"></div>
+      <button class="sm-close" onclick="closeSessionModal()">✕</button>
+    </div>
+    <div class="sm-meta" id="sm-meta"></div>
+    <div class="sm-convo" id="sm-convo"></div>
+    <div class="sm-actions" id="sm-actions"></div>
+  </div>
+</div>
+
+<script>
+// ── SESSION TRACKING ──────────────────────────────────────────
+let activeSession = null;
+
+function createSession() {
+  activeSession = {
+    id: Date.now().toString(36) + Math.random().toString(36).substr(2,5),
+    startTime: Date.now(),
+    status: 'ongoing',
+    issue: '',
+    summary: '',
+    history: []
+  };
+}
+
+function updateActiveSession(status, issue) {
+  if (!activeSession) return;
+  if (status) activeSession.status = status;
+  if (issue) activeSession.issue = issue;
+  activeSession.history = [...chatHistory];
+  // Auto-summarize: first user message = issue title
+  const firstUser = chatHistory.find(m => m.role === 'user');
+  if (firstUser && !activeSession.issue) activeSession.issue = firstUser.content.substring(0,80);
+  // Summary = last AI message
+  const lastAI = [...chatHistory].reverse().find(m => m.role === 'assistant');
+  if (lastAI) activeSession.summary = lastAI.content.replace(/<[^>]+>/g,'').substring(0,200);
+  saveSession(activeSession);
+}
+
+// ── ADMIN PANEL ──────────────────────────────────────────────────
+const SESSIONS_KEY = 'it_kb_sessions';
+let allSessions = [];
+let currentSessionFilter = 'all';
+let secretClickCount = 0;
+let secretClickTimer = null;
+let currentSessionId = null;
+
+// Secret access: click title 5 times within 3 seconds
+function handleSecretClick() {
+  secretClickCount++;
+  clearTimeout(secretClickTimer);
+  secretClickTimer = setTimeout(() => { secretClickCount = 0; }, 3000);
+  if (secretClickCount >= 5) {
+    secretClickCount = 0;
+    openAdminPanel();
+  }
+}
+
+function openAdminPanel() {
+  const pw = prompt('🔒 Admin Password:');
+  if (pw === null) return;
+  if (pw !== 'GOD') {
+    alert('Access denied.');
+    return;
+  }
+  document.getElementById('role-picker').style.display = 'none';
+  document.getElementById('enduser-view').classList.remove('active');
+  document.getElementById('it-view').classList.remove('active');
+  document.getElementById('admin-view').classList.add('active');
+  loadAndRenderSessions();
+}
+
+// Save session to localStorage
+function saveSession(session) {
+  try {
+    const raw = localStorage.getItem(SESSIONS_KEY);
+    const sessions = raw ? JSON.parse(raw) : [];
+    const existing = sessions.findIndex(s => s.id === session.id);
+    if (existing >= 0) sessions[existing] = session;
+    else sessions.unshift(session);
+    // Keep last 200 sessions
+    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions.slice(0,200)));
+  } catch(e) { console.warn('Storage error', e); }
+}
+
+function loadSessions() {
+  try {
+    const raw = localStorage.getItem(SESSIONS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function loadAndRenderSessions() {
+  allSessions = loadSessions();
+  renderStats();
+  renderSessionList();
+}
+
+function renderStats() {
+  const total = allSessions.length;
+  const solved = allSessions.filter(s => s.status === 'solved').length;
+  const attention = allSessions.filter(s => s.status === 'attention').length;
+  const ongoing = allSessions.filter(s => s.status === 'ongoing').length;
+  document.getElementById('admin-stats').innerHTML = `
+    <div class="stat-box"><div class="stat-num">${total}</div><div class="stat-label">Total Sessions</div></div>
+    <div class="stat-box green"><div class="stat-num">${solved}</div><div class="stat-label">Solved</div></div>
+    <div class="stat-box red"><div class="stat-num">${attention}</div><div class="stat-label">Need Attention</div></div>
+    <div class="stat-box amber"><div class="stat-num">${ongoing}</div><div class="stat-label">Ongoing</div></div>
+  `;
+}
+
+function filterSessions(filter, btn) {
+  currentSessionFilter = filter;
+  document.querySelectorAll('.af-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderSessionList();
+}
+
+function renderSessionList() {
+  const list = document.getElementById('admin-list');
+  let sessions = allSessions;
+  if (currentSessionFilter !== 'all') {
+    sessions = sessions.filter(s => s.status === currentSessionFilter);
+  }
+
+  if (!sessions.length) {
+    list.innerHTML = `<div class="empty-admin">// no sessions found<br><br>${currentSessionFilter === 'all' ? 'No end-user sessions recorded yet.' : 'No sessions with this status.'}</div>`;
+    return;
+  }
+
+  list.innerHTML = sessions.map(s => {
+    const statusLabel = s.status === 'solved' ? '✅ Solved' : s.status === 'attention' ? '🔴 Needs Attention' : '🟡 Ongoing';
+    const statusClass = s.status;
+    const time = new Date(s.startTime).toLocaleString();
+    const msgs = s.history ? s.history.length : 0;
+    return `<div class="session-card status-${statusClass}" onclick="openSessionModal('${s.id}')">
+      <div class="sc-top">
+        <span class="sc-status ${statusClass}">${statusLabel}</span>
+        <span class="sc-id">#${s.id.slice(-6)}</span>
+        <span class="sc-time">${time}</span>
+      </div>
+      <div class="sc-issue">${s.issue || 'General IT Issue'}</div>
+      <div class="sc-summary">${s.summary || 'No summary available.'}</div>
+      <div class="sc-msgs">${msgs} messages exchanged</div>
+    </div>`;
+  }).join('');
+}
+
+function openSessionModal(id) {
+  currentSessionId = id;
+  const s = allSessions.find(x => x.id === id);
+  if (!s) return;
+
+  document.getElementById('sm-title').textContent = s.issue || 'IT Support Session';
+  document.getElementById('sm-meta').innerHTML = `
+    <div class="sm-meta-item">Session: <span>#${s.id.slice(-6)}</span></div>
+    <div class="sm-meta-item">Started: <span>${new Date(s.startTime).toLocaleString()}</span></div>
+    <div class="sm-meta-item">Status: <span>${s.status}</span></div>
+    <div class="sm-meta-item">Messages: <span>${s.history ? s.history.length : 0}</span></div>
+  `;
+
+  const convo = document.getElementById('sm-convo');
+  convo.innerHTML = (s.history || []).map(m => `
+    <div>
+      <div class="sm-msg-label">${m.role === 'user' ? '👤 User' : '🤖 IT Assistant'}</div>
+      <div class="sm-msg ${m.role === 'user' ? 'user' : 'ai'}">${m.content.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</div>
+    </div>`).join('');
+
+  document.getElementById('sm-actions').innerHTML = `
+    <button class="sm-btn solved" onclick="updateSessionStatus('${id}','solved')">✅ Mark Solved</button>
+    <button class="sm-btn attn" onclick="updateSessionStatus('${id}','attention')">🔴 Needs Attention</button>
+    <button class="sm-btn del" onclick="deleteSession('${id}')">🗑 Delete</button>
+  `;
+
+  document.getElementById('session-modal').classList.add('active');
+}
+
+function closeSessionModal() {
+  document.getElementById('session-modal').classList.remove('active');
+  currentSessionId = null;
+}
+
+function updateSessionStatus(id, status) {
+  const sessions = loadSessions();
+  const idx = sessions.findIndex(s => s.id === id);
+  if (idx >= 0) {
+    sessions[idx].status = status;
+    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+    allSessions = sessions;
+    renderStats();
+    renderSessionList();
+    closeSessionModal();
+  }
+}
+
+function deleteSession(id) {
+  if (!confirm('Delete this session?')) return;
+  const sessions = loadSessions().filter(s => s.id !== id);
+  localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+  allSessions = sessions;
+  renderStats();
+  renderSessionList();
+  closeSessionModal();
+}
+
+function clearAllSessions() {
+  if (!confirm('Delete ALL sessions? This cannot be undone.')) return;
+  localStorage.removeItem(SESSIONS_KEY);
+  allSessions = [];
+  renderStats();
+  renderSessionList();
+}
+
+document.getElementById('session-modal').addEventListener('click', e => {
+  if (e.target === document.getElementById('session-modal')) closeSessionModal();
+});
+</script>
+</body>
+</html>
